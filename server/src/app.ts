@@ -8,7 +8,7 @@ import path from 'path';
 import logger from 'morgan';
 import { Error } from '@/types';
 import createError from 'http-errors';
-import config from '@/config';
+import apiRouter from '@/routes/api';
 
 const port = process.env.PORT || 3000;
 const app = express();
@@ -22,6 +22,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, '../../client/dist')));
+app.use('/api', apiRouter);
 
 app.use((req, res, next) => {
   next(createError(404));
