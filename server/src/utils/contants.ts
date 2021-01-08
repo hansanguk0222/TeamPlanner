@@ -14,4 +14,5 @@ export const ERROR_MESSAGE = {
   NOT_ALLOWED_FILE_TYPE: '허용되지 않은 파일타입',
   GOOGLE_OAUTH_FAILED: '구글 OAuth 인증 실패',
   GOOGLE_OAUTH_SIGNUP_FAILED: '구글 OAuth로 회원가입 실패',
+  UPDATE_USERPROFILE_FAILED: '유저 프로필 수정 실패',
 };
