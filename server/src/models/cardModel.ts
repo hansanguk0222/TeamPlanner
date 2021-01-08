@@ -1,7 +1,6 @@
 import pool from '@/db';
-import { Model } from '@/types';
 
-export const cardModel: Model = {
+export const cardModel = {
   createCard({ content, cardListId, cardOrder }: { content: string; cardListId: number; cardOrder: number }) {
     const sql = 'INSERT INTO card (cardList_id, content, card_order) VALUES (?, ?, ?)';
     return pool.execute(sql, [cardListId, content, cardOrder]);
