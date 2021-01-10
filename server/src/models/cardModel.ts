@@ -1,6 +1,7 @@
 import pool from '@/db';
+import { Model } from '@/types';
 
-export const cardModel = {
+export const cardModel: Model = {
   createCard({ content, cardListId, cardOrder }: { content: string; cardListId: number; cardOrder: number }) {
     const sql = 'INSERT INTO card (cardList_id, content, card_order) VALUES (?, ?, ?)';
     return pool.execute(sql, [cardListId, content, cardOrder]);
@@ -28,7 +29,6 @@ export const cardModel = {
       const newQuery = query.concat(`UPDATE card SET card_order=${cur[0]} WHERE id=${cur[1]};`);
       return newQuery;
     }, '');
-    console.log(sql);
     return pool.query(sql, []);
   },
 };

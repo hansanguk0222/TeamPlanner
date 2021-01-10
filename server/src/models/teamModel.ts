@@ -1,6 +1,7 @@
 import pool from '@/db';
+import { Model } from '@/types';
 
-export const teamModel = {
+export const teamModel: Model = {
   joinTeam({ teamId, channelId }: { teamId: number; channelId: number }) {
     const sql = `INSERT INTO user_team (teamId, channelId, is_deleted) VALUES (?, ?, ?);`;
     return pool.execute(sql, [teamId, channelId, false]);

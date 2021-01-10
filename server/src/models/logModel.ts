@@ -1,6 +1,7 @@
 import pool from '@/db';
+import { Model } from '@/types';
 
-export const logModel = {
+export const logModel: Model = {
   getLogs({ teamId }: { teamId: number }) {
     const sql = `SELECT id, user_id, updated_at as updatedAt, work from log WHERE team_id=?`;
     return pool.execute(sql, [teamId]);
