@@ -27,6 +27,8 @@ module.exports = {
     'react/jsx-one-expression-per-line': 'off',
     'prettier/prettier': 'error',
     'no-console': 'warn',
+    'no-alert': 'off',
+    'no-shadow': 'off',
     'no-useless-escape': 'off',
     'no-plusplus': ['error', { allowForLoopAfterthoughts: true }],
     'no-unused-expressions': ['warn'],
