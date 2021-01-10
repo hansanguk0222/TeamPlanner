@@ -1,13 +1,4 @@
 node_modules
 database
 .env
-routes
-node_modules
-services
-types
-utils
-middlewares
-lib
-dv
-config
-models
+.gitignore
