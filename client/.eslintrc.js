@@ -32,6 +32,8 @@ module.exports = {
     'no-useless-escape': 'off',
     'no-plusplus': ['error', { allowForLoopAfterthoughts: true }],
     'no-unused-expressions': ['warn'],
+    'no-unused-vars': 'off',
+    '@typescript-eslint/no-unused-vars': ['off'],
     'import/extensions': [
       'error',
       'always',
