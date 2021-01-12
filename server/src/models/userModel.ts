@@ -1,5 +1,6 @@
 import pool from '@/db';
 import { Model } from '@/types';
+import { profile } from 'console';
 
 export const userModel: Model = {
   updateUserProfileImage({ userId, profileImage }: { userId: number; profileImage: string }): any {
@@ -16,10 +17,24 @@ export const userModel: Model = {
     WHERE id=?`;
     return pool.execute(sql, [userId]);
   },
-  login({ email, pw }: { email: string; pw: string }) {
-    const sql = `SELECT id, email, nickname, profile_image
+  login({ email }: { email: string }) {
+    const sql = `SELECT id, email, pw, nickname, profile_image
     FROM user
-    WHERE email=? AND pw=?`;
-    return pool.execute(sql, [email, pw]);
+    WHERE email=?`;
+    return pool.execute(sql, [email]);
+  },
+  signUp({
+    email,
+    pw,
+    nickname,
+    profileImage,
+  }: {
+    email: string;
+    pw: string;
+    nickname: string;
+    profileImage: string;
+  }): any {
+    const sql = `INSERT INTO user (email, pw, nickname, profile_image) VALUES (?, ?, ?, ?)`;
+    return pool.execute(sql, [email, pw, nickname, profileImage]);
   },
 };
