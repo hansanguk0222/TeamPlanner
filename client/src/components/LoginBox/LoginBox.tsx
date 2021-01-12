@@ -20,7 +20,7 @@ const LoginBox = () => {
   const [emailFirstClick, setEmailFirstClick] = useState(false);
   const [pwFirstClick, setPwFirstClick] = useState(false);
 
-  const { err, accessToken, onLoginRequest } = useAuth();
+  const { err, onLoginRequest } = useAuth();
 
   useEffect(() => {
     if (err?.response?.status === 401) {
@@ -29,7 +29,6 @@ const LoginBox = () => {
   }, [err]);
 
   const isValidEmail = () => {
-    console.log(email);
     const regex = /^[0-9a-zA-Z]*\@[0-9a-zA-Z]*\.(com|net|co.kr)$/i;
     if (email !== '' && regex.test(email)) {
       setEmailValidCheck(true);
@@ -40,7 +39,6 @@ const LoginBox = () => {
   };
 
   const isValidPw = () => {
-    console.log(pw);
     const regex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{8,}$/;
     if (pw !== '' && regex.test(pw)) {
       setPwValidCheck(true);
