@@ -7,7 +7,7 @@ interface InputProps {
 }
 
 export const AuthInput = styled(Input)<InputProps>`
-  width: 20rem;
+  width: 22rem;
   padding: 5px;
   font-size: ${(props) => props.theme.size.l};
   border: 2px solid ${(props) => props.theme.color.black13};
