@@ -36,9 +36,9 @@ export const userJoin = async (req: Request, res: Response, next: NextFunction):
   if (verifyRequestData([email, pw, nickname, profileImage])) {
     try {
       const hashPw = await bcrypt.hash(pw, 10);
-      console.log(hashPw);
       await userModel.signUp({ email, pw: hashPw, nickname, profileImage });
       res.status(200).json({ message: OK_MESSAGE.SIGN_UP_SUCCESS });
+      return;
     } catch (err) {
       next(err);
       return;
