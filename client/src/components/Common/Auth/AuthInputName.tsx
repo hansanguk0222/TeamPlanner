@@ -1,9 +1,22 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
-import { Input } from '@/styles/shared';
+
+const setContent = (type: string): string => {
+  console.log(type);
+  switch (type) {
+    case 'email':
+      return '이메일 형식이 잘못되었습니다.';
+    case 'password':
+      return '비밀번호는 영어, 숫자, 특수문자를 포함한 최소 8자리입니다.';
+    case 'nickname':
+      return '닉네임은 필수입니다.';
+    default:
+      return '';
+  }
+};
 
 interface InputNameProps {
-  email: boolean;
+  type: string;
   valid: boolean;
 }
 
@@ -15,7 +28,7 @@ export const AuthInputName = styled.span<InputNameProps>`
     !props.valid &&
     css`
       &:after {
-        content: '${props.email ? '이메일 형식이 잘못되었습니다.' : '비밀번호는 영어, 숫자, 특수문자를 포함한 8자리입니다.'}';
+        content: '${setContent(props.type)}';
         color: ${props.theme.color.red};
         position: absolute;
         top: 50%;
