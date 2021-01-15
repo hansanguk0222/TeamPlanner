@@ -7,6 +7,15 @@ interface Config {
   jwtRefreshSecret: string;
   clientHost: string;
   serverHost: string;
+  mail: {
+    service: string;
+    host: string;
+    port: number;
+    auth: {
+      user: string;
+      pass: string;
+    };
+  };
 }
 
 const config: Config = {
@@ -34,6 +43,15 @@ const config: Config = {
   },
   jwtSecret: process.env.JWT_SECRET as string,
   jwtRefreshSecret: process.env.JWT_REFRESH_SECRET as string,
+  mail: {
+    service: 'Naver',
+    host: 'smtp.naver.com',
+    port: 587,
+    auth: {
+      user: process.env.NODE_MAILER_EMAIL as string,
+      pass: process.env.NODE_MAILER_PW as string,
+    },
+  },
 };
 
 export default config;
