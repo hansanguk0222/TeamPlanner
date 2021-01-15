@@ -37,4 +37,8 @@ export const userModel: Model = {
     const sql = `INSERT INTO user (email, pw, nickname, profile_image) VALUES (?, ?, ?, ?)`;
     return pool.execute(sql, [email, pw, nickname, profileImage]);
   },
+  isExistEmail({ email }: { email: string }) {
+    const sql = `SELECT id FROM user WHERE email=?`;
+    return pool.execute(sql, [email]);
+  },
 };
