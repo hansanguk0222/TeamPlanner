@@ -3,9 +3,10 @@ import jwt from 'jsonwebtoken';
 import passport from 'passport';
 import config from '@/config';
 import bcrypt from 'bcrypt';
-import { verifyRequestData } from '@/utils/utils';
-import { ERROR_MESSAGE, OK_MESSAGE, TIME } from '@/utils/contants';
+import { verifyRequestData, randomCode } from '@/utils/utils';
+import { ERROR_MESSAGE, TIME } from '@/utils/contants';
 import { userModel } from '@/models';
+import nodemailer from 'nodemailer';
 
 export const userLogin = (req: Request, res: Response, next: NextFunction): void => {
   passport.authenticate('local', { session: false }, (err, user) => {
@@ -37,7 +38,7 @@ export const userJoin = async (req: Request, res: Response, next: NextFunction):
     try {
       const hashPw = await bcrypt.hash(pw, 10);
       await userModel.signUp({ email, pw: hashPw, nickname, profileImage });
-      res.status(200).json({ message: OK_MESSAGE.SIGN_UP_SUCCESS });
+      res.status(201).end();
       return;
     } catch (err) {
       next(err);
@@ -45,4 +46,43 @@ export const userJoin = async (req: Request, res: Response, next: NextFunction):
     }
   }
   res.status(400).json({ message: ERROR_MESSAGE.MISSING_REQUIRED_VALUES });
+};
+
+export const isExistUser = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  const { email } = req.body;
+  if (verifyRequestData([email])) {
+    try {
+      const [user] = await userModel.isExistEmail({ email });
+      console.log(user);
+      if (user.length === 0) {
+        res.status(200).end();
+        return;
+      }
+      res.status(200).json({ message: ERROR_MESSAGE.OVERLAP_EMAIL });
+      return;
+    } catch (err) {
+      next(err);
+      return;
+    }
+  }
+  res.status(400).json({ message: ERROR_MESSAGE.MISSING_REQUIRED_VALUES });
+};
+
+export const sendEmail = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  const { email } = req.body;
+  try {
+    const code = randomCode();
+    const message = {
+      from: process.env.NODE_MAILER_EMAIL,
+      to: email,
+      subject: `팀 플레너 인증코드입니다.`,
+      html: `<p>인증코드는 ${code}입니다.</p>`,
+    };
+    const transporter = nodemailer.createTransport(config.mail);
+    await transporter.sendMail(message);
+    res.status(200).json({ code });
+    return;
+  } catch (err) {
+    next(err);
+  }
 };
