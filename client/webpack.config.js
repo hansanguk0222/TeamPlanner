@@ -87,9 +87,9 @@ module.exports = {
       // favicon: './src/public/icon/slack.ico',
     }),
     new CleanWebpackPlugin(),
-    // new Dotenv({
-    //   path: process.env.MODE === 'dev' ? '.env' : '.env.prod',
-    // }),
+    new Dotenv({
+      path: process.env.MODE === 'dev' ? '.env' : '.env.prod',
+    }),
   ],
   optimization: {
     splitChunks: {
