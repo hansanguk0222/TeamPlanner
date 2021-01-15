@@ -1,47 +1,105 @@
 import React, { useEffect, useState } from 'react';
+import useSignup from '@/hooks/useSignup';
+import useInterval from '@/hooks/useInterval';
+import { Link, useHistory } from 'react-router-dom';
+import { isValidSignUpEmail, isValidSignUpPw, isValidNickname } from '@/utils/utils';
 import styled from 'styled-components';
-import useAuth from '@/hooks/useAuth';
-import { ERROR_MESSAGE } from '@/utils/contants';
 import { AuthButton, AuthInput, AuthContainer, AuthContent, AuthTitle, AuthLabel, AuthInputName } from '../Common/Auth';
+
+interface EmailAuthorizeStateProps {
+  timeout: boolean;
+}
+
+const Timer = styled.span`
+  width: 22rem;
+  font-size: ${(props) => props.theme.size.xs};
+  margin-top: -10px;
+  margin-bottom: 1rem;
+`;
+
+const EmailAuthorizeState = styled.span<EmailAuthorizeStateProps>`
+  width: 22rem;
+  font-size: ${(props) => props.theme.size.xs};
+  margin-top: -10px;
+  margin-bottom: 1rem;
+  color: ${(props) => (props.timeout ? props.theme.color.red : props.theme.color.black16)};
+`;
 
 const JoinBox = () => {
   const [email, setEmail] = useState('');
   const [pw, setPw] = useState('');
   const [nickname, setNickname] = useState('');
+  const [checkPw, setCheckPw] = useState('');
+  const [emailCode, setEmailCode] = useState('');
+  const [{ min, sec }, setTime] = useState({
+    min: '00',
+    sec: '00',
+  });
+  const [count, setCount] = useState(0);
   const [emailValidCheck, setEmailValidCheck] = useState(false);
   const [pwValidCheck, setPwValidCheck] = useState(false);
   const [nicknameValidCheck, setNicknameValidCheck] = useState(false);
+  const [pwSameCheck, setPwSameCheck] = useState(false);
+  const [emailCodeSameCheck, setEmailCodeSameCheck] = useState(false);
   const [emailFirstClick, setEmailFirstClick] = useState(false);
   const [pwFirstClick, setPwFirstClick] = useState(false);
   const [nicknameFirstClick, setNicknameFirstClick] = useState(false);
+  const [checkPwFirstClick, setCheckPwFirstClick] = useState(false);
+  const [emailCodeFirstClick, setEmailCodeFirstClick] = useState(false);
 
-  const { err, accessToken, onLoginRequest } = useAuth();
+  const history = useHistory();
+
+  const {
+    authorizeCode,
+    isJoinOk,
+    isNotExistEmail,
+    onSignUpOverlapInitialize,
+    onAuthorizeEmailRequest,
+    onJoinRequest,
+    onSignUpOverlapRequest,
+  } = useSignup();
 
   useEffect(() => {
-    if (err?.response?.status === 401) {
-      alert(ERROR_MESSAGE.NO_EXIST_USER);
+    if (isJoinOk) {
+      history.push('/login');
     }
-  }, [err]);
+  }, [isJoinOk]);
 
-  const isValidEmail = () => {
-    const regex = /^[0-9a-zA-Z]*\@[0-9a-zA-Z]*\.(com|net|co.kr)$/i;
-    if (email !== '' && regex.test(email)) {
-      setEmailValidCheck(true);
-      return true;
-    }
-    setEmailValidCheck(false);
-    return false;
-  };
+  useInterval(
+    () => {
+      setCount(count - 1);
+    },
+    () => {
+      setCount(300);
+    },
+    1000,
+    isNotExistEmail,
+    count,
+  );
 
-  const isValidPw = () => {
-    const regex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{8,}$/;
-    if (pw !== '' && regex.test(pw)) {
-      setPwValidCheck(true);
-      return true;
+  useEffect(() => {
+    if (isNotExistEmail) {
+      let min = String(Math.floor(count / 60));
+      let sec = String(count % 60);
+      if (min.length === 1) {
+        min = `0${min}`;
+      }
+      if (sec.length === 1) {
+        sec = `0${sec}`;
+      }
+      setTime({ min, sec });
     }
-    setPwValidCheck(false);
-    return false;
-  };
+  }, [isNotExistEmail, count]);
+
+  useEffect(() => {
+    if (isNotExistEmail) {
+      onAuthorizeEmailRequest({ email });
+    }
+  }, [isNotExistEmail]);
+
+  useEffect(() => {
+    console.log(authorizeCode);
+  }, [authorizeCode]);
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
@@ -49,6 +107,18 @@ const JoinBox = () => {
 
   const handlePwChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPw(e.target.value);
+  };
+
+  const handleNicknameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setNickname(e.target.value);
+  };
+
+  const handleCheckPwChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setCheckPw(e.target.value);
+  };
+
+  const handleEmailCodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setEmailCode(e.target.value);
   };
 
   const isEmailFirstClick = () => {
@@ -63,12 +133,60 @@ const JoinBox = () => {
     }
   };
 
+  const isNicknameFirstClick = () => {
+    if (!nicknameFirstClick) {
+      setNicknameFirstClick(true);
+    }
+  };
+
+  const isCheckPwFirstClick = () => {
+    if (!checkPwFirstClick) {
+      setCheckPwFirstClick(true);
+    }
+  };
+
+  const isEmailCodeFirstClick = () => {
+    if (!emailCodeFirstClick) {
+      setEmailCodeFirstClick(true);
+    }
+  };
+
+  const isSamePw = () => {
+    if (pw === checkPw) {
+      setPwSameCheck(true);
+      return;
+    }
+    setPwSameCheck(false);
+  };
+
+  const isSameEmailCode = () => {
+    if (emailCode === authorizeCode) {
+      setEmailCodeSameCheck(true);
+      return;
+    }
+    setEmailCodeSameCheck(false);
+  };
+
+  const emailExistAndValidCheck = (): void => {
+    if (isValidSignUpEmail({ setEmailValidCheck, setEmailCodeSameCheck, setEmailCode, email })) {
+      onSignUpOverlapRequest({ email });
+      return;
+    }
+    onSignUpOverlapInitialize();
+  };
+
+  const recallEmailAuthorizecode = (): void => {
+    onAuthorizeEmailRequest({ email });
+    setCount(300);
+    setEmailCode('');
+  };
+
   return (
     <AuthContainer>
       <AuthContent>
         <AuthTitle>Sign in</AuthTitle>
         <AuthLabel>
-          <AuthInputName email valid={!(!emailValidCheck && emailFirstClick)}>
+          <AuthInputName type="email" isNotExistEmail={isNotExistEmail} valid={!(!emailValidCheck && emailFirstClick)}>
             이메일
           </AuthInputName>
           <AuthInput
@@ -76,14 +194,46 @@ const JoinBox = () => {
             type="text"
             onFocus={isEmailFirstClick}
             onChange={handleEmailChange}
-            onKeyUp={isValidEmail}
+            onKeyUp={emailExistAndValidCheck}
             value={email}
             autoComplete="false"
+            isNotExistEmail={isNotExistEmail}
             valid={!(!emailValidCheck && emailFirstClick)}
           />
         </AuthLabel>
+        {isNotExistEmail && emailValidCheck && (
+          <>
+            <AuthLabel>
+              <AuthInputName type="emailCode" valid={!(!emailCodeSameCheck && emailCodeFirstClick)}>
+                이메일 인증코드
+              </AuthInputName>
+              <AuthInput
+                placeholder="이메일로 받은 코드를 입력해주세요"
+                type="text"
+                onFocus={isEmailCodeFirstClick}
+                onChange={handleEmailCodeChange}
+                onKeyUp={isSameEmailCode}
+                value={emailCode}
+                autoComplete="false"
+                readOnly={emailCodeSameCheck}
+                valid={!(!emailCodeSameCheck && emailCodeFirstClick)}
+              />
+            </AuthLabel>
+            {!emailCodeSameCheck && count !== 0 && (
+              <Timer>
+                {min}:{sec}
+              </Timer>
+            )}
+            {!emailCodeSameCheck && count === 0 && (
+              <EmailAuthorizeState timeout onClick={recallEmailAuthorizecode}>
+                시간초과 됬습니다. 재인증하려면 여기를 눌러주세요
+              </EmailAuthorizeState>
+            )}
+            {emailCodeSameCheck && <EmailAuthorizeState timeout={false}>이메일 인증 완료!!!</EmailAuthorizeState>}
+          </>
+        )}
         <AuthLabel>
-          <AuthInputName email={false} valid={!(!pwValidCheck && pwFirstClick)}>
+          <AuthInputName type="password" valid={!(!pwValidCheck && pwFirstClick)}>
             비밀번호
           </AuthInputName>
           <AuthInput
@@ -91,31 +241,55 @@ const JoinBox = () => {
             type="password"
             onFocus={isPwFirstClick}
             onChange={handlePwChange}
-            onKeyUp={isValidPw}
+            onKeyUp={() => isValidSignUpPw({ setPwValidCheck, setCheckPw, setPwSameCheck, pw })}
             value={pw}
             autoComplete="false"
             valid={!(!pwValidCheck && pwFirstClick)}
           />
         </AuthLabel>
         <AuthLabel>
-          <AuthInputName email valid>
+          <AuthInputName type="passwordCheck" valid={!(!pwSameCheck && checkPwFirstClick)}>
+            비밀번호 확인
+          </AuthInputName>
+          <AuthInput
+            placeholder="위에 적은 것과 같은 비밀번호를 입력해주세요"
+            type="password"
+            onFocus={isCheckPwFirstClick}
+            onChange={handleCheckPwChange}
+            onKeyUp={isSamePw}
+            value={checkPw}
+            autoComplete="false"
+            valid={!(!pwSameCheck && checkPwFirstClick)}
+          />
+        </AuthLabel>
+        <AuthLabel>
+          <AuthInputName type="nickname" valid={!(!nicknameValidCheck && nicknameFirstClick)}>
             닉네임
           </AuthInputName>
           <AuthInput
-            placeholder="email"
+            placeholder="nickname"
             type="text"
-            onFocus={isPwFirstClick}
-            onChange={handlePwChange}
-            onKeyUp={isValidPw}
-            value={pw}
+            onFocus={isNicknameFirstClick}
+            onChange={handleNicknameChange}
+            onKeyUp={() => isValidNickname({ setNicknameValidCheck, nickname })}
+            value={nickname}
             autoComplete="false"
-            valid={!(!pwValidCheck && pwFirstClick)}
+            valid={!(!nicknameValidCheck && nicknameFirstClick)}
           />
         </AuthLabel>
-        <AuthButton login={false} possible>
-          회원가입
-        </AuthButton>
+        <Link to="/login">
+          <AuthButton
+            onClick={() => onJoinRequest({ email, pw, nickname })}
+            login={false}
+            disabled={!(pwValidCheck && emailValidCheck && nicknameValidCheck && pwSameCheck && emailCodeSameCheck)}
+            possible={nicknameValidCheck && pwValidCheck && emailValidCheck && pwSameCheck && emailCodeSameCheck}
+          >
+            회원가입
+          </AuthButton>
+        </Link>
       </AuthContent>
     </AuthContainer>
   );
 };
+
+export default JoinBox;
