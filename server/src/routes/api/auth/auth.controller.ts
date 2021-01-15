@@ -33,9 +33,13 @@ export const userLogin = (req: Request, res: Response, next: NextFunction): void
 };
 
 export const userJoin = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-  const { email, pw, nickname, profileImage } = req.body;
-  if (verifyRequestData([email, pw, nickname, profileImage])) {
+  const { email, pw, nickname } = req.body;
+  let { profileImage } = req.body;
+  if (verifyRequestData([email, pw, nickname])) {
     try {
+      if (profileImage === undefined) {
+        profileImage = 'aaa';
+      }
       const hashPw = await bcrypt.hash(pw, 10);
       await userModel.signUp({ email, pw: hashPw, nickname, profileImage });
       res.status(201).end();
@@ -53,12 +57,11 @@ export const isExistUser = async (req: Request, res: Response, next: NextFunctio
   if (verifyRequestData([email])) {
     try {
       const [user] = await userModel.isExistEmail({ email });
-      console.log(user);
       if (user.length === 0) {
         res.status(200).end();
         return;
       }
-      res.status(200).json({ message: ERROR_MESSAGE.OVERLAP_EMAIL });
+      res.status(400).json({ message: ERROR_MESSAGE.OVERLAP_EMAIL });
       return;
     } catch (err) {
       next(err);
@@ -71,16 +74,16 @@ export const isExistUser = async (req: Request, res: Response, next: NextFunctio
 export const sendEmail = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   const { email } = req.body;
   try {
-    const code = randomCode();
+    const authorizeCode = randomCode();
     const message = {
       from: process.env.NODE_MAILER_EMAIL,
       to: email,
       subject: `팀 플레너 인증코드입니다.`,
-      html: `<p>인증코드는 ${code}입니다.</p>`,
+      html: `<p>인증코드는 ${authorizeCode}입니다.</p>`,
     };
     const transporter = nodemailer.createTransport(config.mail);
     await transporter.sendMail(message);
-    res.status(200).json({ code });
+    res.status(200).json({ authorizeCode });
     return;
   } catch (err) {
     next(err);
