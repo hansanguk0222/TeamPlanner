@@ -10,10 +10,10 @@ function* login({ payload }: ReturnType<typeof loginRequest>) {
     if (status === 200) {
       localStorage.setItem('accessToken', accessToken);
       localStorage.setItem('refreshToken', refreshToken);
-      yield put({ type: LOGIN_SUCCESS, payload: { accessToken, refreshToken } });
+      yield put({ type: LOGIN_SUCCESS, payload: { status } });
     }
   } catch (err) {
-    yield put({ type: LOGIN_ERROR, payload: { err } });
+    yield put({ type: LOGIN_ERROR, payload: { status: err.response.status, err } });
   }
 }
 

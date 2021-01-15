@@ -1,47 +1,48 @@
-import * as authActions from '@/store/actions/auth.action';
-import { AuthState, LoginPayload, LoginSuccessPayload, LoginErrorPayload } from '@/types';
-import { AxiosError } from 'axios';
+import { LOGIN_REQUEST, LOGIN_SUCCESS, LOGIN_ERROR, loginRequest, loginSuccess, loginError } from '@/store/actions/auth.action';
+import { AuthState } from '@/types';
 
-interface authActionType {
-  type: string;
-  payload: {
-    accessToken?: string | null;
-    refreshToken?: string | null;
-    err: AxiosError | null;
-  };
-}
+type authActionType = ReturnType<typeof loginRequest> | ReturnType<typeof loginSuccess> | ReturnType<typeof loginError>;
+
 const initialState: AuthState = {
-  loading: false,
-  err: null,
-  accessToken: null,
-  refreshToken: null,
+  login: {
+    loading: false,
+    err: null,
+    status: null,
+  },
 };
 
 const authReducers = (state: AuthState = initialState, action: authActionType) => {
-  const { type, payload } = action;
-  switch (type) {
-    case authActions.LOGIN_REQUEST: {
+  switch (action.type) {
+    case LOGIN_REQUEST: {
       return {
         ...state,
-        loading: true,
-        err: null,
+        login: {
+          loading: true,
+          err: null,
+          status: null,
+        },
       };
     }
-    case authActions.LOGIN_SUCCESS: {
-      const { accessToken, refreshToken } = payload;
+    case LOGIN_SUCCESS: {
+      const { status } = action.payload;
       return {
         ...state,
-        loading: false,
-        accessToken,
-        refreshToken,
+        login: {
+          loading: false,
+          err: null,
+          status,
+        },
       };
     }
-    case authActions.LOGIN_ERROR: {
-      const { err } = payload;
+    case LOGIN_ERROR: {
+      const { status, err } = action.payload;
       return {
         ...state,
-        loading: false,
-        err,
+        login: {
+          loading: false,
+          err,
+          status,
+        },
       };
     }
     default: {

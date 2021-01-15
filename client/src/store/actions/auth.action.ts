@@ -9,12 +9,12 @@ export const loginRequest = ({ email, pw }: LoginPayload) => ({
   payload: { email, pw },
 });
 
-export const loginSuccess = ({ accessToken, refreshToken }: LoginSuccessPayload) => ({
+export const loginSuccess = ({ status }: LoginSuccessPayload) => ({
   type: LOGIN_SUCCESS,
-  payload: { accessToken, refreshToken },
+  payload: { status },
 });
 
-export const loginError = ({ err }: LoginErrorPayload) => ({
+export const loginError = ({ status, err }: LoginErrorPayload) => ({
   type: LOGIN_ERROR,
-  payload: { err },
+  payload: { status, err },
 });
