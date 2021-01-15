@@ -15,6 +15,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@types/nodemailer": "^6.4.0",
     "axios": "^0.21.0",
     "bcrypt": "^5.0.0",
     "cookie-parser": "^1.4.5",
@@ -31,6 +32,7 @@
     "module-alias": "^2.2.2",
     "morgan": "^1.10.0",
     "mysql2": "^2.2.5",
+    "nodemailer": "^6.4.17",
     "passport": "^0.4.1",
     "passport-google-oauth20": "^2.0.0",
     "passport-jwt": "^4.0.0",
