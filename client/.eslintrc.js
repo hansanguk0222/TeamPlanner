@@ -33,6 +33,7 @@ module.exports = {
     'no-plusplus': ['error', { allowForLoopAfterthoughts: true }],
     'no-unused-expressions': ['warn'],
     'no-unused-vars': 'off',
+    'no-case-declarations': 'off',
     '@typescript-eslint/no-unused-vars': ['off'],
     'import/extensions': [
       'error',
