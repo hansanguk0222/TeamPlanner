@@ -5,28 +5,19 @@ import { useCallback } from 'react';
 import { AxiosError } from 'axios';
 
 const useAuth = () => {
-  const loading = useSelector((state: RootState) => state.authReducers.loading);
-  const err = useSelector((state: RootState) => state.authReducers.err);
-  const accessToken = useSelector((state: RootState) => state.authReducers.accessToken);
-  const refreshToken = useSelector((state: RootState) => state.authReducers.refreshToken);
+  const loading = useSelector((state: RootState) => state.authReducers.login.loading);
+  const err = useSelector((state: RootState) => state.authReducers.login.err);
+  const status = useSelector((state: RootState) => state.authReducers.login.status);
 
   const dispatch = useDispatch();
 
   const onLoginRequest = useCallback(({ email, pw }: { email: string; pw: string }) => dispatch(loginRequest({ email, pw })), [dispatch]);
-  const onLoginSuccess = useCallback(
-    ({ accessToken, refreshToken }: { accessToken: string; refreshToken: string }) => dispatch(loginSuccess({ accessToken, refreshToken })),
-    [dispatch],
-  );
-  const onLoginError = useCallback(({ err }: { err: AxiosError }) => dispatch(loginError({ err })), [dispatch]);
 
   return {
     loading,
     err,
-    accessToken,
-    refreshToken,
+    status,
     onLoginRequest,
-    onLoginSuccess,
-    onLoginError,
   };
 };
 
