@@ -16,11 +16,7 @@ export const ERROR_MESSAGE = {
   GOOGLE_OAUTH_SIGNUP_FAILED: '구글 OAuth로 회원가입 실패',
   UPDATE_USERPROFILE_FAILED: '유저 프로필 수정 실패',
   NOT_EXIST_USER: '존재하지 않는 유저',
-};
-
-export const OK_MESSAGE = {
-  LOGIN_SUCCESS: '로그인 성공',
-  SIGN_UP_SUCCESS: '회원가입 성공',
+  OVERLAP_EMAIL: '존재하는 이메일',
 };
 
 export const TIME = {
