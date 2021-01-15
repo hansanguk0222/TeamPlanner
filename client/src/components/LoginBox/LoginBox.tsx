@@ -2,10 +2,12 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import useAuth from '@/hooks/useAuth';
 import { ERROR_MESSAGE } from '@/utils/contants';
+import { Link, useHistory } from 'react-router-dom';
+import { isValidLoginEmail, isValidLoginPw } from '@/utils/utils';
 import { AuthButton, AuthInput, AuthContainer, AuthContent, AuthTitle, AuthLabel, AuthInputName } from '../Common/Auth';
 
 const ButtonBox = styled.div`
-  width: 20rem;
+  width: 22rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -20,33 +22,19 @@ const LoginBox = () => {
   const [emailFirstClick, setEmailFirstClick] = useState(false);
   const [pwFirstClick, setPwFirstClick] = useState(false);
 
-  const { err, onLoginRequest } = useAuth();
+  const { status, err, onLoginRequest } = useAuth();
+  const history = useHistory();
 
   useEffect(() => {
-    if (err?.response?.status === 401) {
-      alert(ERROR_MESSAGE.NO_EXIST_USER);
+    if (status !== null) {
+      if (status === 401) {
+        alert(ERROR_MESSAGE.NO_EXIST_USER);
+      }
+      if (status === 200) {
+        history.push('/');
+      }
     }
-  }, [err]);
-
-  const isValidEmail = () => {
-    const regex = /^[0-9a-zA-Z]*\@[0-9a-zA-Z]*\.(com|net|co.kr)$/i;
-    if (email !== '' && regex.test(email)) {
-      setEmailValidCheck(true);
-      return true;
-    }
-    setEmailValidCheck(false);
-    return false;
-  };
-
-  const isValidPw = () => {
-    const regex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{8,}$/;
-    if (pw !== '' && regex.test(pw)) {
-      setPwValidCheck(true);
-      return true;
-    }
-    setPwValidCheck(false);
-    return false;
-  };
+  }, [status]);
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
@@ -73,7 +61,7 @@ const LoginBox = () => {
       <AuthContent>
         <AuthTitle>Sign in</AuthTitle>
         <AuthLabel>
-          <AuthInputName email valid={!(!emailValidCheck && emailFirstClick)}>
+          <AuthInputName type="email" valid={!(!emailValidCheck && emailFirstClick)}>
             이메일
           </AuthInputName>
           <AuthInput
@@ -81,14 +69,14 @@ const LoginBox = () => {
             type="text"
             onFocus={isEmailFirstClick}
             onChange={handleEmailChange}
-            onKeyUp={isValidEmail}
+            onKeyUp={() => isValidLoginEmail({ setEmailValidCheck, email })}
             value={email}
             autoComplete="false"
             valid={!(!emailValidCheck && emailFirstClick)}
           />
         </AuthLabel>
         <AuthLabel>
-          <AuthInputName email={false} valid={!(!pwValidCheck && pwFirstClick)}>
+          <AuthInputName type="password" valid={!(!pwValidCheck && pwFirstClick)}>
             비밀번호
           </AuthInputName>
           <AuthInput
@@ -96,16 +84,18 @@ const LoginBox = () => {
             type="password"
             onFocus={isPwFirstClick}
             onChange={handlePwChange}
-            onKeyUp={isValidPw}
+            onKeyUp={() => isValidLoginPw({ setPwValidCheck, pw })}
             value={pw}
             autoComplete="false"
             valid={!(!pwValidCheck && pwFirstClick)}
           />
         </AuthLabel>
         <ButtonBox>
-          <AuthButton login={false} possible>
-            회원가입
-          </AuthButton>
+          <Link to="/join">
+            <AuthButton login={false} possible>
+              회원가입
+            </AuthButton>
+          </Link>
           <AuthButton
             login
             disabled={!(pwValidCheck && emailValidCheck)}
