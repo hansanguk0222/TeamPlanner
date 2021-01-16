@@ -29,6 +29,7 @@ module.exports = {
         ts: 'never',
       },
     ],
+    'no-shadow': 'off',
     'import/prefer-default-export': 'off', // 한 개만 export할때는 export default를 쓰도록 하는 옵션
   },
   settings: {

@@ -6,7 +6,7 @@
     "paths": {
       "@/*": ["./*"]
     },
-    "typeRoots": ["client/node_modules/@types", "./src/types"],
+    "typeRoots": ["./node_modules/@types", "./src/types"],
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
@@ -23,5 +23,5 @@
     "module": "ESNext"
   },
   "include": ["./src/**/*"],
-  "exclude": ["client/node_modules"]
+  "exclude": ["node_modules"]
 }

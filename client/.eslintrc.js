@@ -1,14 +1,17 @@
+const path = require('path');
+
 module.exports = {
   env: {
     browser: true,
     es2021: true,
+    node: true,
   },
   extends: [
-    'eslint:recommended',
-    'plugin:@typescript-eslint/eslint-recommended',
+    'plugin:react/recommended',
+    'airbnb',
+    'plugin:@typescript-eslint/recommended',
     'prettier/@typescript-eslint',
     'plugin:prettier/recommended',
-    'airbnb-base',
   ],
   parser: '@typescript-eslint/parser',
   parserOptions: {
@@ -18,11 +21,23 @@ module.exports = {
     ecmaVersion: 12,
     sourceType: 'module',
   },
-  plugins: ['react', '@typescript-eslint'],
+  plugins: ['react', '@typescript-eslint', 'prettier'],
   rules: {
+    'react/jsx-filename-extension': [1, { extensions: ['.js', '.jsx', '.ts', '.tsx'] }],
+    'react/jsx-one-expression-per-line': 'off',
+    'prettier/prettier': 'error',
+    'no-console': 'warn',
+    'no-alert': 'off',
+    'no-shadow': 'off',
+    'no-useless-escape': 'off',
+    'no-plusplus': ['error', { allowForLoopAfterthoughts: true }],
+    'no-unused-expressions': ['warn'],
+    'no-unused-vars': 'off',
+    'no-case-declarations': 'off',
+    '@typescript-eslint/no-unused-vars': ['off'],
     'import/extensions': [
       'error',
-      'ignorePackages',
+      'always',
       {
         js: 'never',
         jsx: 'never',
@@ -30,13 +45,19 @@ module.exports = {
         tsx: 'never',
       },
     ],
+    'no-constant-condition': ['error', { checkLoops: false }],
+    'no-restricted-globals': 'warn',
     'no-use-before-define': ['off'], // import React할 때 에러떠서 off
+    '@typescript-eslint/no-use-before-define': ['warn'],
+    'import/prefer-default-export': 'off', // 한 개만 export할때는 export default를 쓰도록 하는 옵션
   },
   settings: {
     'import/resolver': {
-      node: {
-        extensions: ['.js', '.jsx', '.ts', '.tsx'],
+      typescript: {
+        project: path.join(__dirname, './tsconfig.json'), // tsconfig 옵션을 감지하도록 추가
       },
     },
+    react: { version: 'detect' },
   },
+  ignorePatterns: ['node_modules', 'babel.config.js', 'webpack.config.js', '.eslintrc.js'],
 };

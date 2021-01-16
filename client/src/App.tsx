@@ -1,9 +1,22 @@
 import React from 'react';
-import Hello from './Hello';
+import { ThemeProvider } from 'styled-components';
+import theme from '@/styles/theme';
+import { LoginPage, SignUpPage } from '@/pages';
+import { GlobalStyle } from '@/styles/';
+import { BrowserRouter, Redirect, Route, Switch } from 'react-router-dom';
 
 const App = () => {
-  const user = { id: 'abc123', pw: '1234' };
-  return <Hello {...user} />;
+  return (
+    <ThemeProvider theme={theme}>
+      <GlobalStyle />
+      <BrowserRouter>
+        <Switch>
+          <Route path="/login" component={LoginPage} />
+          <Route path="/join" component={SignUpPage} />
+        </Switch>
+      </BrowserRouter>
+    </ThemeProvider>
+  );
 };
 
 export default App;
