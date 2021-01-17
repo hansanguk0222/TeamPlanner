@@ -19,7 +19,7 @@ export const isValidLoginEmail = ({
   return false;
 };
 
-export const isValidSignUpEmail = ({
+export const isValidSignupEmail = ({
   setEmailValidCheck,
   setEmailCode,
   setEmailCodeSameCheck,
@@ -51,7 +51,7 @@ export const isValidLoginPw = ({ setPwValidCheck, pw }: { setPwValidCheck: (pwVa
   return false;
 };
 
-export const isValidSignUpPw = ({
+export const isValidSignupPw = ({
   setPwValidCheck,
   setCheckPw,
   setPwSameCheck,

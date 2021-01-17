@@ -34,12 +34,10 @@ export const userLogin = (req: Request, res: Response, next: NextFunction): void
 
 export const userJoin = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   const { email, pw, nickname } = req.body;
-  let { profileImage } = req.body;
+  const profileImage =
+    'https://raw.githubusercontent.com/hansanguk0222/TeamPlanner/714017e2a64893b802db2199d883733d22dff806/server/src/lib/defaultImage/defaultUser.svg';
   if (verifyRequestData([email, pw, nickname])) {
     try {
-      if (profileImage === undefined) {
-        profileImage = 'aaa';
-      }
       const hashPw = await bcrypt.hash(pw, 10);
       await userModel.signUp({ email, pw: hashPw, nickname, profileImage });
       res.status(201).end();

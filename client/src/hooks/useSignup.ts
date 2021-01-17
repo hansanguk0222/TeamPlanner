@@ -1,6 +1,6 @@
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '@/store/reducers';
-import { authorizeEmailRequest, joinRequest, signUpOverlapRequest, signUpOverlapInitialize } from '@/store/actions/signup.action';
+import { authorizeEmailRequest, joinRequest, signupOverlapRequest, signupOverlapInitialize } from '@/store/actions/signup.action';
 import { useCallback } from 'react';
 import { AxiosError } from 'axios';
 import { stringify } from 'qs';
@@ -17,8 +17,8 @@ const useSignup = () => {
     [dispatch],
   );
   const onAuthorizeEmailRequest = useCallback(({ email }: { email: string }) => dispatch(authorizeEmailRequest({ email })), [dispatch]);
-  const onSignUpOverlapRequest = useCallback(({ email }: { email: string }) => dispatch(signUpOverlapRequest({ email })), [dispatch]);
-  const onSignUpOverlapInitialize = useCallback(() => dispatch(signUpOverlapInitialize()), [dispatch]);
+  const onSignUpOverlapRequest = useCallback(({ email }: { email: string }) => dispatch(signupOverlapRequest({ email })), [dispatch]);
+  const onSignUpOverlapInitialize = useCallback(() => dispatch(signupOverlapInitialize()), [dispatch]);
 
   return {
     isJoinOk,

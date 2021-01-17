@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import useSignup from '@/hooks/useSignup';
 import useInterval from '@/hooks/useInterval';
 import { Link, useHistory } from 'react-router-dom';
-import { isValidSignUpEmail, isValidSignUpPw, isValidNickname } from '@/utils/utils';
+import { isValidSignupEmail, isValidSignupPw, isValidNickname } from '@/utils/utils';
 import styled from 'styled-components';
 import { AuthButton, AuthInput, AuthContainer, AuthContent, AuthTitle, AuthLabel, AuthInputName } from '../Common/Auth';
 
@@ -25,7 +25,7 @@ const EmailAuthorizeState = styled.span<EmailAuthorizeStateProps>`
   color: ${(props) => (props.timeout ? props.theme.color.red : props.theme.color.black16)};
 `;
 
-const JoinBox = () => {
+const SignupBox = () => {
   const [email, setEmail] = useState('');
   const [pw, setPw] = useState('');
   const [nickname, setNickname] = useState('');
@@ -168,7 +168,7 @@ const JoinBox = () => {
   };
 
   const emailExistAndValidCheck = (): void => {
-    if (isValidSignUpEmail({ setEmailValidCheck, setEmailCodeSameCheck, setEmailCode, email })) {
+    if (isValidSignupEmail({ setEmailValidCheck, setEmailCodeSameCheck, setEmailCode, email })) {
       onSignUpOverlapRequest({ email });
       return;
     }
@@ -241,7 +241,7 @@ const JoinBox = () => {
             type="password"
             onFocus={isPwFirstClick}
             onChange={handlePwChange}
-            onKeyUp={() => isValidSignUpPw({ setPwValidCheck, setCheckPw, setPwSameCheck, pw })}
+            onKeyUp={() => isValidSignupPw({ setPwValidCheck, setCheckPw, setPwSameCheck, pw })}
             value={pw}
             autoComplete="false"
             valid={!(!pwValidCheck && pwFirstClick)}
@@ -292,4 +292,4 @@ const JoinBox = () => {
   );
 };
 
-export default JoinBox;
+export default SignupBox;

@@ -1,6 +1,6 @@
 import {
-  SignUpOverlapPayload,
-  SignUpOverlapErrorPayload,
+  SignupOverlapPayload,
+  SignupOverlapErrorPayload,
   AuthorizeEmailPayload,
   AuthorizeEmailSuccessPayload,
   AuthorizeEmailErrorPayload,
@@ -20,21 +20,21 @@ export const JOIN_REQUEST = 'signup/JOIN_REQUEST' as const;
 export const JOIN_SUCCESS = 'signup/JOIN_SUCCESS' as const;
 export const JOIN_ERROR = 'signup/JOIN_ERROR' as const;
 
-export const signUpOverlapRequest = ({ email }: SignUpOverlapPayload) => ({
+export const signupOverlapRequest = ({ email }: SignupOverlapPayload) => ({
   type: SIGNUP_OVERLAP_REQUEST,
   payload: { email },
 });
 
-export const signUpOverlapSuccess = () => ({
+export const signupOverlapSuccess = () => ({
   type: SIGNUP_OVERLAP_SUCCESS,
 });
 
-export const signUpOverlapError = ({ err }: SignUpOverlapErrorPayload) => ({
+export const signupOverlapError = ({ err }: SignupOverlapErrorPayload) => ({
   type: SIGNUP_OVERLAP_ERROR,
   payload: { err },
 });
 
-export const signUpOverlapInitialize = () => ({
+export const signupOverlapInitialize = () => ({
   type: SIGNUP_OVERLAP_INITIALIZE,
 });
 

@@ -13,7 +13,7 @@ import {
   SIGNUP_OVERLAP_ERROR,
   SIGNUP_OVERLAP_REQUEST,
   SIGNUP_OVERLAP_SUCCESS,
-  signUpOverlapRequest,
+  signupOverlapRequest,
 } from '@/store/actions/signup.action';
 import { authService } from '@/services';
 
@@ -33,7 +33,7 @@ function* watchJoin() {
   yield takeLatest(JOIN_REQUEST, join);
 }
 
-function* signUpOverlap({ payload }: ReturnType<typeof signUpOverlapRequest>) {
+function* signUpOverlap({ payload }: ReturnType<typeof signupOverlapRequest>) {
   try {
     yield delay(500);
     const { email } = payload;

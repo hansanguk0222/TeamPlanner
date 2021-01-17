@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
-import SignUpBox from '@/components/SignUpBox/SignUpBox';
+import SignupBox from '@/components/SignupBox/SignupBox';
 import { isAccessTokenAlive } from '@/utils/utils';
 
-const SignUpPage = () => {
+const SignupPage = () => {
   const history = useHistory();
 
   useEffect(() => {
@@ -11,7 +11,7 @@ const SignUpPage = () => {
       history.push('/');
     }
   }, []);
-  return <SignUpBox />;
+  return <SignupBox />;
 };
 
-export default SignUpPage;
+export default SignupPage;

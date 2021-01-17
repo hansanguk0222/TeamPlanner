@@ -1,5 +1,5 @@
 import { combineReducers } from 'redux';
-import { AuthState, SignUpState } from '@/types';
+import { AuthState, SignupState } from '@/types';
 import authReducers from './auth.reducer';
 import signupReducers from './signup.reducer';
 
@@ -12,5 +12,5 @@ export default rootReducer;
 
 export interface RootState {
   authReducers: AuthState;
-  signupReducers: SignUpState;
+  signupReducers: SignupState;
 }

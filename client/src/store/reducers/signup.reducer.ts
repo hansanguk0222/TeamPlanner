@@ -11,10 +11,10 @@ import {
   authorizeEmailRequest,
   authorizeEmailSuccess,
   authorizeEmailInitialize,
-  signUpOverlapError,
-  signUpOverlapRequest,
-  signUpOverlapSuccess,
-  signUpOverlapInitialize,
+  signupOverlapError,
+  signupOverlapRequest,
+  signupOverlapSuccess,
+  signupOverlapInitialize,
   JOIN_ERROR,
   JOIN_SUCCESS,
   JOIN_REQUEST,
@@ -22,22 +22,22 @@ import {
   joinError,
   joinSuccess,
 } from '@/store/actions/signup.action';
-import { SignUpState } from '@/types';
+import { SignupState } from '@/types';
 
 type signUpActionType =
   | ReturnType<typeof authorizeEmailRequest>
   | ReturnType<typeof authorizeEmailSuccess>
   | ReturnType<typeof authorizeEmailError>
   | ReturnType<typeof authorizeEmailInitialize>
-  | ReturnType<typeof signUpOverlapRequest>
-  | ReturnType<typeof signUpOverlapSuccess>
-  | ReturnType<typeof signUpOverlapError>
-  | ReturnType<typeof signUpOverlapInitialize>
+  | ReturnType<typeof signupOverlapRequest>
+  | ReturnType<typeof signupOverlapSuccess>
+  | ReturnType<typeof signupOverlapError>
+  | ReturnType<typeof signupOverlapInitialize>
   | ReturnType<typeof joinRequest>
   | ReturnType<typeof joinError>
   | ReturnType<typeof joinSuccess>;
 
-const initialState: SignUpState = {
+const initialState: SignupState = {
   overlap: {
     loading: false,
     err: null,
@@ -55,7 +55,7 @@ const initialState: SignUpState = {
   },
 };
 
-const signUpReducers = (state: SignUpState = initialState, action: signUpActionType) => {
+const signUpReducers = (state: SignupState = initialState, action: signUpActionType) => {
   switch (action.type) {
     case JOIN_REQUEST: {
       return {

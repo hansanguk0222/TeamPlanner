@@ -22,7 +22,7 @@ export interface LoginErrorPayload {
   err: AxiosError;
 }
 
-export interface SignUpState {
+export interface SignupState {
   overlap: {
     loading: boolean;
     err: AxiosError | null;
@@ -40,11 +40,11 @@ export interface SignUpState {
   };
 }
 
-export interface SignUpOverlapPayload {
+export interface SignupOverlapPayload {
   email: string;
 }
 
-export interface SignUpOverlapErrorPayload {
+export interface SignupOverlapErrorPayload {
   err: AxiosError;
 }
 
