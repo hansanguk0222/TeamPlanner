@@ -1,13 +1,13 @@
 import express from 'express';
-import passport from 'passport';
+import { authorizedCheck } from '@/middleware/auth.middleware';
 import cardListRouter from './cardLists';
 import cardRouter from './cards';
 import userRouter from './users';
 import authRouter from './auth';
 
 const router = express.Router();
-router.use('/cardLists', passport.authenticate('jwt', { session: false }), cardListRouter);
-router.use('/cards', passport.authenticate('jwt', { session: false }), cardRouter);
-router.use('/users', passport.authenticate('jwt', { session: false }), userRouter);
+router.use('/cardLists', authorizedCheck, cardListRouter);
+router.use('/cards', authorizedCheck, cardRouter);
+router.use('/users', authorizedCheck, userRouter);
 router.use('/auth', authRouter);
 export default router;
