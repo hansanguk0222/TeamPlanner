@@ -88,9 +88,9 @@ export const isValidNickname = ({
   return false;
 };
 
-export const authTokenVerify = (token: string, type: AuthToken): Promise<any> => {
+export const accessTokenVerify = (token: string): Promise<any> => {
   return new Promise((resolve, reject) => {
-    jwt.verify(token, type === TOKEN_TYPE.ACCESS ? config.JWT_SECRET : config.JWT_REFRESH_SECRET, (err, decoded) => {
+    jwt.verify(token, config.JWT_SECRET, (err, decoded) => {
       if (err) {
         reject(err);
         return;
