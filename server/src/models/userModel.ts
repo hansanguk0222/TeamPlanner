@@ -41,4 +41,8 @@ export const userModel: Model = {
     const sql = `SELECT id FROM user WHERE email=?`;
     return pool.execute(sql, [email]);
   },
+  setRefreshToken({ id, refreshToken }: { id: number; refreshToken: string }) {
+    const sql = `UPDATE user SET refreshToken=? WHERE id=?`;
+    return pool.execute(sql, [refreshToken, id]);
+  },
 };
