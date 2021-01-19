@@ -1,4 +1,4 @@
-import { all, fork, call, put, takeLatest, delay, takeEvery } from 'redux-saga/effects';
+import { all, fork, call, put, takeLatest, delay, takeEvery, debounce } from 'redux-saga/effects';
 import {
   AUTHORIZE_EMAIL_ERROR,
   AUTHORIZE_EMAIL_REQUEST,
@@ -35,7 +35,6 @@ function* watchJoin() {
 
 function* signUpOverlap({ payload }: ReturnType<typeof signupOverlapRequest>) {
   try {
-    yield delay(500);
     const { email } = payload;
     const { data, status } = yield call(authService.overlapEmail, { email });
     if (status === 200) {
@@ -47,7 +46,7 @@ function* signUpOverlap({ payload }: ReturnType<typeof signupOverlapRequest>) {
 }
 
 function* watchSignUpOverlap() {
-  yield takeEvery(SIGNUP_OVERLAP_REQUEST, signUpOverlap);
+  yield debounce(1000, SIGNUP_OVERLAP_REQUEST, signUpOverlap);
 }
 
 function* authorizeEmail({ payload }: ReturnType<typeof authorizeEmailRequest>) {
