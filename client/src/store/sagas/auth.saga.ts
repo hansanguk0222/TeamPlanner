@@ -6,10 +6,9 @@ function* login({ payload }: ReturnType<typeof loginRequest>) {
   try {
     const { email, pw } = payload;
     const { data, status } = yield call(authService.login, { email, pw });
-    const { accessToken, refreshToken } = data;
+    const { accessToken } = data;
     if (status === 200) {
       localStorage.setItem('accessToken', accessToken);
-      localStorage.setItem('refreshToken', refreshToken);
       yield put({ type: LOGIN_SUCCESS, payload: { status } });
     }
   } catch (err) {
