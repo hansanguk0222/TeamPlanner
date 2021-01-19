@@ -18,16 +18,28 @@ export const userLogin = (req: Request, res: Response, next: NextFunction): void
       res.status(400).json({ message: ERROR_MESSAGE.NOT_EXIST_USER });
       return;
     }
-    req.login(user, { session: false }, (err) => {
+    req.login(user, { session: false }, async (err) => {
       if (err) {
         next(err);
       }
+
       const accessToken = jwt.sign({ user }, config.jwtSecret, { expiresIn: TIME.FIVE_MINUTE });
       const refreshToken = jwt.sign({ user }, config.jwtRefreshSecret, {
         expiresIn: TIME.TWO_MONTH,
       });
 
-      res.status(200).json({ user, accessToken, refreshToken });
+      try {
+        await userModel.setRefreshToken({ id: +user.id, refreshToken });
+
+        res.cookie('refreshTokenKey', user.id, {
+          maxAge: TIME.TWO_MONTH * 1000,
+          httpOnly: true,
+        });
+        res.json({ user, accessToken });
+        return;
+      } catch (err) {
+        next(err);
+      }
     });
   })(req, res);
 };
