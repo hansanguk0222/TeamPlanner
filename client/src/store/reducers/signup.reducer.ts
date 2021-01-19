@@ -3,18 +3,18 @@ import {
   AUTHORIZE_EMAIL_SUCCESS,
   AUTHORIZE_EMAIL_REQUEST,
   AUTHORIZE_EMAIL_INITIALIZE,
-  SIGNUP_OVERLAP_ERROR,
-  SIGNUP_OVERLAP_SUCCESS,
-  SIGNUP_OVERLAP_REQUEST,
-  SIGNUP_OVERLAP_INITIALIZE,
+  SIGNUP_OVERLAPEMAIL_ERROR,
+  SIGNUP_OVERLAPEMAIL_SUCCESS,
+  SIGNUP_OVERLAPEMAIL_REQUEST,
+  SIGNUP_OVERLAPEMAIL_INITIALIZE,
   authorizeEmailError,
   authorizeEmailRequest,
   authorizeEmailSuccess,
   authorizeEmailInitialize,
-  signupOverlapError,
-  signupOverlapRequest,
-  signupOverlapSuccess,
-  signupOverlapInitialize,
+  signupOverlapEmailError,
+  signupOverlapEmailRequest,
+  signupOverlapEmailSuccess,
+  signupOverlapEmailInitialize,
   JOIN_ERROR,
   JOIN_SUCCESS,
   JOIN_REQUEST,
@@ -29,16 +29,16 @@ type signUpActionType =
   | ReturnType<typeof authorizeEmailSuccess>
   | ReturnType<typeof authorizeEmailError>
   | ReturnType<typeof authorizeEmailInitialize>
-  | ReturnType<typeof signupOverlapRequest>
-  | ReturnType<typeof signupOverlapSuccess>
-  | ReturnType<typeof signupOverlapError>
-  | ReturnType<typeof signupOverlapInitialize>
+  | ReturnType<typeof signupOverlapEmailRequest>
+  | ReturnType<typeof signupOverlapEmailSuccess>
+  | ReturnType<typeof signupOverlapEmailError>
+  | ReturnType<typeof signupOverlapEmailInitialize>
   | ReturnType<typeof joinRequest>
   | ReturnType<typeof joinError>
   | ReturnType<typeof joinSuccess>;
 
 const initialState: SignupState = {
-  overlap: {
+  overlapEmail: {
     loading: false,
     err: null,
     isNotExistEmail: null,
@@ -87,40 +87,41 @@ const signUpReducers = (state: SignupState = initialState, action: signUpActionT
         },
       };
     }
-    case SIGNUP_OVERLAP_REQUEST: {
+    case SIGNUP_OVERLAPEMAIL_REQUEST: {
       return {
         ...state,
-        overlap: {
+        overlapEmail: {
           loading: true,
           err: null,
         },
       };
     }
-    case SIGNUP_OVERLAP_SUCCESS: {
+    case SIGNUP_OVERLAPEMAIL_SUCCESS: {
       return {
         ...state,
-        overlap: {
+        overlapEmail: {
           loading: false,
           err: null,
           isNotExistEmail: true,
         },
       };
     }
-    case SIGNUP_OVERLAP_ERROR: {
+    case SIGNUP_OVERLAPEMAIL_ERROR: {
       const { err } = action.payload;
       return {
         ...state,
-        overlap: {
+        overlapEmail: {
           loading: false,
           err,
           isNotExistEmail: false,
         },
       };
     }
-    case SIGNUP_OVERLAP_INITIALIZE: {
+    case SIGNUP_OVERLAPEMAIL_INITIALIZE: {
+      console.log('초기화');
       return {
         ...state,
-        overlap: {
+        overlapEmail: {
           loading: false,
           err: null,
           isNotExistEmail: null,

@@ -53,10 +53,10 @@ const SignupBox = () => {
     authorizeCode,
     isJoinOk,
     isNotExistEmail,
-    onSignUpOverlapInitialize,
+    onSignUpOverlapEmailInitialize,
     onAuthorizeEmailRequest,
     onJoinRequest,
-    onSignUpOverlapRequest,
+    onSignUpOverlapEmailRequest,
   } = useSignup();
 
   useEffect(() => {
@@ -169,10 +169,10 @@ const SignupBox = () => {
 
   const emailExistAndValidCheck = (): void => {
     if (isValidSignupEmail({ setEmailValidCheck, setEmailCodeSameCheck, setEmailCode, email })) {
-      onSignUpOverlapRequest({ email });
+      onSignUpOverlapEmailRequest({ email });
       return;
     }
-    onSignUpOverlapInitialize();
+    onSignUpOverlapEmailInitialize();
   };
 
   const recallEmailAuthorizecode = (): void => {

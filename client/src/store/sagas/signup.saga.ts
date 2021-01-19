@@ -10,10 +10,10 @@ import {
   JOIN_REQUEST,
   JOIN_SUCCESS,
   joinRequest,
-  SIGNUP_OVERLAP_ERROR,
-  SIGNUP_OVERLAP_REQUEST,
-  SIGNUP_OVERLAP_SUCCESS,
-  signupOverlapRequest,
+  SIGNUP_OVERLAPEMAIL_ERROR,
+  SIGNUP_OVERLAPEMAIL_REQUEST,
+  SIGNUP_OVERLAPEMAIL_SUCCESS,
+  signupOverlapEmailRequest,
 } from '@/store/actions/signup.action';
 import { authService } from '@/services';
 
@@ -33,20 +33,20 @@ function* watchJoin() {
   yield takeLatest(JOIN_REQUEST, join);
 }
 
-function* signUpOverlap({ payload }: ReturnType<typeof signupOverlapRequest>) {
+function* signUpOverlap({ payload }: ReturnType<typeof signupOverlapEmailRequest>) {
   try {
     const { email } = payload;
     const { data, status } = yield call(authService.overlapEmail, { email });
     if (status === 200) {
-      yield put({ type: SIGNUP_OVERLAP_SUCCESS });
+      yield put({ type: SIGNUP_OVERLAPEMAIL_SUCCESS });
     }
   } catch (err) {
-    yield put({ type: SIGNUP_OVERLAP_ERROR, payload: { err } });
+    yield put({ type: SIGNUP_OVERLAPEMAIL_ERROR, payload: { err } });
   }
 }
 
 function* watchSignUpOverlap() {
-  yield debounce(1000, SIGNUP_OVERLAP_REQUEST, signUpOverlap);
+  yield debounce(1000, SIGNUP_OVERLAPEMAIL_REQUEST, signUpOverlap);
 }
 
 function* authorizeEmail({ payload }: ReturnType<typeof authorizeEmailRequest>) {

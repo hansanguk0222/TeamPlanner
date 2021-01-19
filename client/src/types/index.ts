@@ -23,7 +23,7 @@ export interface LoginErrorPayload {
 }
 
 export interface SignupState {
-  overlap: {
+  overlapEmail: {
     loading: boolean;
     err: AxiosError | null;
     isNotExistEmail: boolean | null;
@@ -40,11 +40,11 @@ export interface SignupState {
   };
 }
 
-export interface SignupOverlapPayload {
+export interface SignupOverlapEmailPayload {
   email: string;
 }
 
-export interface SignupOverlapErrorPayload {
+export interface SignupOverlapEmailErrorPayload {
   err: AxiosError;
 }
 
@@ -70,4 +70,5 @@ export interface JoinErrorPayload {
   err: AxiosError;
 }
 
+// export interface MyPageState {}
 export type AuthToken = 'ACCESS' | 'REFRESH';
