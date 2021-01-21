@@ -24,7 +24,7 @@ import {
 } from '@/store/actions/signup.action';
 import { SignupState } from '@/types';
 
-type signUpActionType =
+type signupActionType =
   | ReturnType<typeof authorizeEmailRequest>
   | ReturnType<typeof authorizeEmailSuccess>
   | ReturnType<typeof authorizeEmailError>
@@ -55,7 +55,7 @@ const initialState: SignupState = {
   },
 };
 
-const signUpReducers = (state: SignupState = initialState, action: signUpActionType) => {
+const signupReducers = (state: SignupState = initialState, action: signupActionType) => {
   switch (action.type) {
     case JOIN_REQUEST: {
       return {
@@ -118,7 +118,6 @@ const signUpReducers = (state: SignupState = initialState, action: signUpActionT
       };
     }
     case SIGNUP_OVERLAPEMAIL_INITIALIZE: {
-      console.log('초기화');
       return {
         ...state,
         overlapEmail: {
@@ -174,4 +173,4 @@ const signUpReducers = (state: SignupState = initialState, action: signUpActionT
   }
 };
 
-export default signUpReducers;
+export default signupReducers;
