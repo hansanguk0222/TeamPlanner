@@ -1,5 +1,14 @@
 import { all, fork, call, put, takeLatest } from 'redux-saga/effects';
-import { loginRequest, LOGIN_REQUEST, LOGIN_SUCCESS, LOGIN_ERROR } from '@/store/actions/auth.action';
+import {
+  loginRequest,
+  LOGIN_REQUEST,
+  LOGIN_SUCCESS,
+  LOGIN_ERROR,
+  logoutRequest,
+  LOGOUT_REQUEST,
+  LOGOUT_SUCCESS,
+  LOGOUT_ERROR,
+} from '@/store/actions/auth.action';
 import { authService } from '@/services';
 
 function* login({ payload }: ReturnType<typeof loginRequest>) {
@@ -20,6 +29,22 @@ function* watchLogin() {
   yield takeLatest(LOGIN_REQUEST, login);
 }
 
+function* logout() {
+  try {
+    const { status } = yield call(authService.logout);
+    if (status === 200) {
+      localStorage.removeItem('accessToken');
+      yield put({ type: LOGOUT_SUCCESS, payload: { status } });
+    }
+  } catch (err) {
+    yield put({ type: LOGOUT_ERROR, payload: { status: err.response.status, err } });
+  }
+}
+
+function* watchLogout() {
+  yield takeLatest(LOGOUT_REQUEST, logout);
+}
+
 export default function* authSaga() {
-  yield all([fork(watchLogin)]);
+  yield all([fork(watchLogin), fork(watchLogout)]);
 }
