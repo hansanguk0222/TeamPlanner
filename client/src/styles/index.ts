@@ -14,6 +14,7 @@ const commonStyle = css`
   body {
     position: relative;
     height: 100%;
+    background: ${(props) => props.theme.color.black5};
   }
 
   #root {
