@@ -7,6 +7,5 @@ export const AuthContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  background: ${(props) => props.theme.color.black5};
   color: ${(props) => props.theme.color.black16};
 `;
