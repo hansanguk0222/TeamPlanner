@@ -21,5 +21,11 @@ export const teamModel: Model = {
     JOIN user_team
     ON user_team.team_id=? AND user_team.user_id=user.id
     WHERE user_team.is_deleted=0;`;
+    return pool.execute(sql, [teamId]);
+  },
+  getTeamList() {
+    const sql = `SELECT id, team_name AS teamName FROM team
+    WHERE is_deleted=0`;
+    return pool.execute(sql, []);
   },
 };
