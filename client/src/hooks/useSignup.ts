@@ -9,7 +9,7 @@ const useSignup = () => {
   const isJoinOk = useSelector((state: RootState) => state.signupReducers.join.isJoinOk);
   const authorizeCode = useSelector((state: RootState) => state.signupReducers.authorizeEmail.authorizeCode);
   const isNotExistEmail = useSelector((state: RootState) => state.signupReducers.overlapEmail.isNotExistEmail);
-
+  const accessCodeError = useSelector((state: RootState) => state.signupReducers.authorizeEmail.err);
   const dispatch = useDispatch();
 
   const onJoinRequest = useCallback(
@@ -24,6 +24,7 @@ const useSignup = () => {
     isJoinOk,
     authorizeCode,
     isNotExistEmail,
+    accessCodeError,
     onJoinRequest,
     onAuthorizeEmailRequest,
     onSignUpOverlapEmailRequest,

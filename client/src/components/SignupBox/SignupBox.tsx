@@ -53,6 +53,7 @@ const SignupBox = () => {
     authorizeCode,
     isJoinOk,
     isNotExistEmail,
+    accessCodeError,
     onSignUpOverlapEmailInitialize,
     onAuthorizeEmailRequest,
     onJoinRequest,
@@ -98,8 +99,10 @@ const SignupBox = () => {
   }, [isNotExistEmail]);
 
   useEffect(() => {
-    console.log(authorizeCode);
-  }, [authorizeCode]);
+    if (accessCodeError) {
+      alert('이메일 인증 코드를 보내는데 오류가 발생했습니다.');
+    }
+  }, [accessCodeError]);
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
