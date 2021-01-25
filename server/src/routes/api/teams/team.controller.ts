@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import { teamModel } from '@/models';
 import { Team } from '@/types';
 
-export const getTeams = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+export const getTeamList = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
     const [teamList] = await teamModel.getTeamList();
     const teamListAndJoinUsers = await Promise.all(
