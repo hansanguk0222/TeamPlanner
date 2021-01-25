@@ -29,7 +29,6 @@ instance.interceptors.request.use(
         } catch (error) {
           if (error?.response?.status === 401) {
             localStorage.removeItem('accessToken');
-            document.cookie = 'refreshTokenKey=; expires=Thu, 01 Jan 1999 00:00:10 GMT;';
             window.location.href = '/login';
           }
         }
@@ -42,4 +41,24 @@ instance.interceptors.request.use(
   },
 );
 
+instance.interceptors.response.use(
+  (res) => {
+    if (res.status >= 400) {
+      console.error('api 요청 실패', res);
+    }
+    return res;
+  },
+  (err) => {
+    if (axios.isCancel(err)) {
+      console.error('요청 취소', err);
+    } else {
+      if (err?.response?.status === 401) {
+        window.location.href = '/login';
+      }
+      console.error('api 에러', err);
+    }
+
+    return Promise.reject(err);
+  },
+);
 export default instance;
