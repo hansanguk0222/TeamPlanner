@@ -22,19 +22,19 @@ const LoginBox = () => {
   const [emailFirstClick, setEmailFirstClick] = useState(false);
   const [pwFirstClick, setPwFirstClick] = useState(false);
 
-  const { status, err, onLoginRequest } = useAuth();
+  const { loginStatus, loginErr, onLoginRequest } = useAuth();
   const history = useHistory();
 
   useEffect(() => {
-    if (status !== null) {
-      if (status === 401) {
+    if (loginStatus !== null) {
+      if (loginStatus === 401) {
         alert(ERROR_MESSAGE.NO_EXIST_USER);
       }
-      if (status === 200) {
+      if (loginStatus === 200) {
         history.push('/');
       }
     }
-  }, [status]);
+  }, [loginStatus]);
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
