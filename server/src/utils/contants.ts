@@ -18,6 +18,7 @@ export const ERROR_MESSAGE = {
   NOT_EXIST_USER: '존재하지 않는 유저',
   OVERLAP_EMAIL: '존재하는 이메일',
   FILE_UPLOAD: '파일 업로드 중 에러',
+  LOGOUT_FAIL: '로그아웃 실패',
 };
 
 export const TIME = {
