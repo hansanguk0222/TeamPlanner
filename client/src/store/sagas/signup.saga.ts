@@ -1,11 +1,10 @@
-import { all, fork, call, put, takeLatest, delay, takeEvery, debounce } from 'redux-saga/effects';
+import { all, fork, call, put, takeLatest, delay, debounce } from 'redux-saga/effects';
 import {
   AUTHORIZE_EMAIL_ERROR,
   AUTHORIZE_EMAIL_REQUEST,
   AUTHORIZE_EMAIL_SUCCESS,
   AUTHORIZE_EMAIL_INITIALIZE,
   authorizeEmailRequest,
-  authorizeEmailInitialize,
   JOIN_ERROR,
   JOIN_REQUEST,
   JOIN_SUCCESS,
