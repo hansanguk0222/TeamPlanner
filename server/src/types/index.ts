@@ -13,3 +13,8 @@ export interface User {
   nickname: string;
   profileImage: string;
 }
+
+export interface Team {
+  id: number;
+  teamName: string;
+}
