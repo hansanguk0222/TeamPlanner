@@ -1,6 +1,6 @@
 import {
-  SignUpOverlapPayload,
-  SignUpOverlapErrorPayload,
+  SignupOverlapEmailPayload,
+  SignupOverlapEmailErrorPayload,
   AuthorizeEmailPayload,
   AuthorizeEmailSuccessPayload,
   AuthorizeEmailErrorPayload,
@@ -8,10 +8,10 @@ import {
   JoinErrorPayload,
 } from '@/types';
 
-export const SIGNUP_OVERLAP_REQUEST = 'signup/SIGNUP_OVERLAP_REQUEST' as const;
-export const SIGNUP_OVERLAP_SUCCESS = 'signup/SIGNUP_OVERLAP_SUCCESS' as const;
-export const SIGNUP_OVERLAP_ERROR = 'signup/SIGNUP_OVERLAP_ERROR' as const;
-export const SIGNUP_OVERLAP_INITIALIZE = 'signup/SIGNUP_OVERLAP_INITIALIZE' as const;
+export const SIGNUP_OVERLAPEMAIL_REQUEST = 'signup/SIGNUP_OVERLAP_REQUEST' as const;
+export const SIGNUP_OVERLAPEMAIL_SUCCESS = 'signup/SIGNUP_OVERLAP_SUCCESS' as const;
+export const SIGNUP_OVERLAPEMAIL_ERROR = 'signup/SIGNUP_OVERLAP_ERROR' as const;
+export const SIGNUP_OVERLAPEMAIL_INITIALIZE = 'signup/SIGNUP_OVERLAP_INITIALIZE' as const;
 export const AUTHORIZE_EMAIL_REQUEST = 'signup/AUTHORIZE_EMAIL_REQUEST' as const;
 export const AUTHORIZE_EMAIL_SUCCESS = 'signup/AUTHORIZE_EMAIL_SUCCESS' as const;
 export const AUTHORIZE_EMAIL_ERROR = 'signup/AUTHORIZE_EMAIL_ERROR' as const;
@@ -20,22 +20,22 @@ export const JOIN_REQUEST = 'signup/JOIN_REQUEST' as const;
 export const JOIN_SUCCESS = 'signup/JOIN_SUCCESS' as const;
 export const JOIN_ERROR = 'signup/JOIN_ERROR' as const;
 
-export const signUpOverlapRequest = ({ email }: SignUpOverlapPayload) => ({
-  type: SIGNUP_OVERLAP_REQUEST,
+export const signupOverlapEmailRequest = ({ email }: SignupOverlapEmailPayload) => ({
+  type: SIGNUP_OVERLAPEMAIL_REQUEST,
   payload: { email },
 });
 
-export const signUpOverlapSuccess = () => ({
-  type: SIGNUP_OVERLAP_SUCCESS,
+export const signupOverlapEmailSuccess = () => ({
+  type: SIGNUP_OVERLAPEMAIL_SUCCESS,
 });
 
-export const signUpOverlapError = ({ err }: SignUpOverlapErrorPayload) => ({
-  type: SIGNUP_OVERLAP_ERROR,
+export const signupOverlapEmailError = ({ err }: SignupOverlapEmailErrorPayload) => ({
+  type: SIGNUP_OVERLAPEMAIL_ERROR,
   payload: { err },
 });
 
-export const signUpOverlapInitialize = () => ({
-  type: SIGNUP_OVERLAP_INITIALIZE,
+export const signupOverlapEmailInitialize = () => ({
+  type: SIGNUP_OVERLAPEMAIL_INITIALIZE,
 });
 
 export const authorizeEmailRequest = ({ email }: AuthorizeEmailPayload) => ({

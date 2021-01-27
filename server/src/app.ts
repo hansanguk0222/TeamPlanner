@@ -11,7 +11,6 @@ import createError from 'http-errors';
 import apiRouter from '@/routes/api';
 import passport from 'passport';
 import passportConfig from '@/config/passport';
-import config from '@/config';
 
 const port = process.env.PORT || 3000;
 const app = express();
@@ -27,17 +26,8 @@ app.use(cookieParser());
 app.use(passport.initialize());
 passportConfig();
 
-app.use(express.static(path.join(__dirname, './src/public')));
-app.use(express.static(path.join(__dirname, '../../client/dist')));
+app.use(express.static(path.join(__dirname, 'public')));
 app.use('/api', apiRouter);
-
-app.all('*', (req, res) => {
-  if (process.env.MODE === 'dev') {
-    res.redirect(config.clientHost);
-    return;
-  }
-  res.sendFile(path.join(__dirname, '../../client/dist/index.html'));
-});
 
 app.use((req, res, next) => {
   next(createError(404));

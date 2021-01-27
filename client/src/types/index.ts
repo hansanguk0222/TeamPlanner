@@ -22,8 +22,8 @@ export interface LoginErrorPayload {
   err: AxiosError;
 }
 
-export interface SignUpState {
-  overlap: {
+export interface SignupState {
+  overlapEmail: {
     loading: boolean;
     err: AxiosError | null;
     isNotExistEmail: boolean | null;
@@ -40,11 +40,11 @@ export interface SignUpState {
   };
 }
 
-export interface SignUpOverlapPayload {
+export interface SignupOverlapEmailPayload {
   email: string;
 }
 
-export interface SignUpOverlapErrorPayload {
+export interface SignupOverlapEmailErrorPayload {
   err: AxiosError;
 }
 
@@ -68,6 +68,39 @@ export interface JoinRequestPayload {
 
 export interface JoinErrorPayload {
   err: AxiosError;
+}
+
+export interface Team {
+  id: number;
+  teanName: string;
+  memberCnt: number;
+  isJoin: boolean;
+}
+
+export interface MyPageState {
+  getTeamList: {
+    loading: boolean;
+    err: AxiosError | null;
+    TeamList: Team[] | null;
+  };
+}
+
+export interface GetTeamListSuccessPayload {
+  TeamList: Team[];
+}
+
+export interface GetTeamListErrorPayload {
+  err: AxiosError;
+}
+
+export interface PopoverProps {
+  width: number;
+  anchorEl: React.MutableRefObject<any>;
+  anchorOrigin: { anchorVertical: string; anchorHorizontal: string };
+  offset: { x: number; y: number };
+  transformOrigin: { transformVertical: string; transformHorizontal: string };
+  visible: boolean;
+  setVisible: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export type AuthToken = 'ACCESS' | 'REFRESH';

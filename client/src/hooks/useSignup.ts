@@ -1,6 +1,6 @@
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '@/store/reducers';
-import { authorizeEmailRequest, joinRequest, signUpOverlapRequest, signUpOverlapInitialize } from '@/store/actions/signup.action';
+import { authorizeEmailRequest, joinRequest, signupOverlapEmailRequest, signupOverlapEmailInitialize } from '@/store/actions/signup.action';
 import { useCallback } from 'react';
 import { AxiosError } from 'axios';
 import { stringify } from 'qs';
@@ -8,8 +8,8 @@ import { stringify } from 'qs';
 const useSignup = () => {
   const isJoinOk = useSelector((state: RootState) => state.signupReducers.join.isJoinOk);
   const authorizeCode = useSelector((state: RootState) => state.signupReducers.authorizeEmail.authorizeCode);
-  const isNotExistEmail = useSelector((state: RootState) => state.signupReducers.overlap.isNotExistEmail);
-
+  const isNotExistEmail = useSelector((state: RootState) => state.signupReducers.overlapEmail.isNotExistEmail);
+  const accessCodeError = useSelector((state: RootState) => state.signupReducers.authorizeEmail.err);
   const dispatch = useDispatch();
 
   const onJoinRequest = useCallback(
@@ -17,17 +17,18 @@ const useSignup = () => {
     [dispatch],
   );
   const onAuthorizeEmailRequest = useCallback(({ email }: { email: string }) => dispatch(authorizeEmailRequest({ email })), [dispatch]);
-  const onSignUpOverlapRequest = useCallback(({ email }: { email: string }) => dispatch(signUpOverlapRequest({ email })), [dispatch]);
-  const onSignUpOverlapInitialize = useCallback(() => dispatch(signUpOverlapInitialize()), [dispatch]);
+  const onSignUpOverlapEmailRequest = useCallback(({ email }: { email: string }) => dispatch(signupOverlapEmailRequest({ email })), [dispatch]);
+  const onSignUpOverlapEmailInitialize = useCallback(() => dispatch(signupOverlapEmailInitialize()), [dispatch]);
 
   return {
     isJoinOk,
     authorizeCode,
     isNotExistEmail,
+    accessCodeError,
     onJoinRequest,
     onAuthorizeEmailRequest,
-    onSignUpOverlapRequest,
-    onSignUpOverlapInitialize,
+    onSignUpOverlapEmailRequest,
+    onSignUpOverlapEmailInitialize,
   };
 };
 

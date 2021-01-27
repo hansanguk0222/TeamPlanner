@@ -38,10 +38,9 @@ export const updateUserProfile = (req: Request, res: Response, next: NextFunctio
 
       await userModel.updateUserProfileNickname({ userId: +userId, nickname });
       await userModel.updateUserProfileImage({ userId: +userId, profileImage });
-    })
-    .on('end', () => {
+
       if (check) {
-        res.status(200).json({});
+        res.status(200).end();
       }
     });
 };

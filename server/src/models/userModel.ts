@@ -23,22 +23,20 @@ export const userModel: Model = {
     WHERE email=?`;
     return pool.execute(sql, [email]);
   },
-  signUp({
-    email,
-    pw,
-    nickname,
-    profileImage,
-  }: {
-    email: string;
-    pw: string;
-    nickname: string;
-    profileImage: string;
-  }): any {
+  signUp({ email, pw, nickname, profileImage }: { email: string; pw: string; nickname: string; profileImage: string }) {
     const sql = `INSERT INTO user (email, pw, nickname, profile_image) VALUES (?, ?, ?, ?)`;
     return pool.execute(sql, [email, pw, nickname, profileImage]);
+  },
+  logout({ id }: { id: number }) {
+    const sql = 'UPDATE user SET refreshToken=null WHERE id=?';
+    return pool.execute(sql, [id]);
   },
   isExistEmail({ email }: { email: string }) {
     const sql = `SELECT id FROM user WHERE email=?`;
     return pool.execute(sql, [email]);
+  },
+  setRefreshToken({ id, refreshToken }: { id: number; refreshToken: string }) {
+    const sql = `UPDATE user SET refreshToken=? WHERE id=?`;
+    return pool.execute(sql, [refreshToken, id]);
   },
 };

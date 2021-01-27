@@ -18,28 +18,54 @@ export const userLogin = (req: Request, res: Response, next: NextFunction): void
       res.status(400).json({ message: ERROR_MESSAGE.NOT_EXIST_USER });
       return;
     }
-    req.login(user, { session: false }, (err) => {
+    req.login(user, { session: false }, async (err) => {
       if (err) {
         next(err);
       }
+
       const accessToken = jwt.sign({ user }, config.jwtSecret, { expiresIn: TIME.FIVE_MINUTE });
       const refreshToken = jwt.sign({ user }, config.jwtRefreshSecret, {
         expiresIn: TIME.TWO_MONTH,
       });
 
-      res.status(200).json({ user, accessToken, refreshToken });
+      try {
+        await userModel.setRefreshToken({ id: +user.id, refreshToken });
+
+        res.cookie('refreshTokenKey', user.id, {
+          maxAge: TIME.TWO_MONTH * 1000,
+          httpOnly: true,
+        });
+        res.json({ user, accessToken });
+        return;
+      } catch (err) {
+        next(err);
+      }
     });
   })(req, res);
 };
 
+export const userLogout = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  const { refreshTokenKey } = req.cookies;
+  if (verifyRequestData([refreshTokenKey])) {
+    try {
+      await userModel.logout({ id: refreshTokenKey });
+      res.clearCookie('refreshTokenKey');
+      res.status(200).end();
+      return;
+    } catch (err) {
+      res.status(400).json({ message: ERROR_MESSAGE.LOGOUT_FAIL });
+      return;
+    }
+  }
+  res.status(400).json({ message: ERROR_MESSAGE.MISSING_REQUIRED_VALUES });
+};
+
 export const userJoin = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   const { email, pw, nickname } = req.body;
-  let { profileImage } = req.body;
+  const profileImage =
+    'https://raw.githubusercontent.com/hansanguk0222/TeamPlanner/714017e2a64893b802db2199d883733d22dff806/server/src/lib/defaultImage/defaultUser.svg';
   if (verifyRequestData([email, pw, nickname])) {
     try {
-      if (profileImage === undefined) {
-        profileImage = 'aaa';
-      }
       const hashPw = await bcrypt.hash(pw, 10);
       await userModel.signUp({ email, pw: hashPw, nickname, profileImage });
       res.status(201).end();
@@ -88,4 +114,40 @@ export const sendEmail = async (req: Request, res: Response, next: NextFunction)
   } catch (err) {
     next(err);
   }
+};
+
+export const googleLogin = (req: Request, res: Response, next: NextFunction): void => {
+  passport.authenticate('google', { session: false }, (err, user) => {
+    if (!user) {
+      res.status(401).json({ message: ERROR_MESSAGE.NOT_EXIST_USER });
+      return;
+    }
+    if (err) {
+      res.status(400).json({ message: ERROR_MESSAGE.NOT_EXIST_USER });
+      return;
+    }
+    req.login(user, { session: false }, async (err) => {
+      if (err) {
+        next(err);
+      }
+
+      const accessToken = jwt.sign({ user }, config.jwtSecret, { expiresIn: TIME.FIVE_MINUTE });
+      const refreshToken = jwt.sign({ user }, config.jwtRefreshSecret, {
+        expiresIn: TIME.TWO_MONTH,
+      });
+
+      try {
+        await userModel.setRefreshToken({ id: +user.id, refreshToken });
+
+        res.cookie('refreshTokenKey', user.id, {
+          maxAge: TIME.TWO_MONTH * 1000,
+          httpOnly: true,
+        });
+        res.json({ user, accessToken });
+        return;
+      } catch (err) {
+        next(err);
+      }
+    });
+  })(req, res);
 };

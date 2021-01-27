@@ -1,9 +1,9 @@
 import React from 'react';
 import { ThemeProvider } from 'styled-components';
 import theme from '@/styles/theme';
-import { LoginPage, SignUpPage } from '@/pages';
+import { LoginPage, SignupPage, MyPage, HomePage } from '@/pages';
 import { GlobalStyle } from '@/styles/';
-import { BrowserRouter, Redirect, Route, Switch } from 'react-router-dom';
+import { BrowserRouter, Route, Switch } from 'react-router-dom';
 
 const App = () => {
   return (
@@ -11,8 +11,10 @@ const App = () => {
       <GlobalStyle />
       <BrowserRouter>
         <Switch>
+          <Route path="/" exact component={HomePage} />
+          <Route path="/mypage" component={MyPage} />
           <Route path="/login" component={LoginPage} />
-          <Route path="/join" component={SignUpPage} />
+          <Route path="/join" component={SignupPage} />
         </Switch>
       </BrowserRouter>
     </ThemeProvider>

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import useSignup from '@/hooks/useSignup';
 import useInterval from '@/hooks/useInterval';
 import { Link, useHistory } from 'react-router-dom';
-import { isValidSignUpEmail, isValidSignUpPw, isValidNickname } from '@/utils/utils';
+import { isValidSignupEmail, isValidSignupPw, isValidNickname } from '@/utils/utils';
 import styled from 'styled-components';
 import { AuthButton, AuthInput, AuthContainer, AuthContent, AuthTitle, AuthLabel, AuthInputName } from '../Common/Auth';
 
@@ -25,7 +25,7 @@ const EmailAuthorizeState = styled.span<EmailAuthorizeStateProps>`
   color: ${(props) => (props.timeout ? props.theme.color.red : props.theme.color.black16)};
 `;
 
-const JoinBox = () => {
+const SignupBox = () => {
   const [email, setEmail] = useState('');
   const [pw, setPw] = useState('');
   const [nickname, setNickname] = useState('');
@@ -53,10 +53,11 @@ const JoinBox = () => {
     authorizeCode,
     isJoinOk,
     isNotExistEmail,
-    onSignUpOverlapInitialize,
+    accessCodeError,
+    onSignUpOverlapEmailInitialize,
     onAuthorizeEmailRequest,
     onJoinRequest,
-    onSignUpOverlapRequest,
+    onSignUpOverlapEmailRequest,
   } = useSignup();
 
   useEffect(() => {
@@ -98,8 +99,10 @@ const JoinBox = () => {
   }, [isNotExistEmail]);
 
   useEffect(() => {
-    console.log(authorizeCode);
-  }, [authorizeCode]);
+    if (accessCodeError) {
+      alert('이메일 인증 코드를 보내는데 오류가 발생했습니다.');
+    }
+  }, [accessCodeError]);
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
@@ -168,11 +171,11 @@ const JoinBox = () => {
   };
 
   const emailExistAndValidCheck = (): void => {
-    if (isValidSignUpEmail({ setEmailValidCheck, setEmailCodeSameCheck, setEmailCode, email })) {
-      onSignUpOverlapRequest({ email });
+    if (isValidSignupEmail({ setEmailValidCheck, setEmailCodeSameCheck, setEmailCode, email })) {
+      onSignUpOverlapEmailRequest({ email });
       return;
     }
-    onSignUpOverlapInitialize();
+    onSignUpOverlapEmailInitialize();
   };
 
   const recallEmailAuthorizecode = (): void => {
@@ -241,7 +244,7 @@ const JoinBox = () => {
             type="password"
             onFocus={isPwFirstClick}
             onChange={handlePwChange}
-            onKeyUp={() => isValidSignUpPw({ setPwValidCheck, setCheckPw, setPwSameCheck, pw })}
+            onKeyUp={() => isValidSignupPw({ setPwValidCheck, setCheckPw, setPwSameCheck, pw })}
             value={pw}
             autoComplete="false"
             valid={!(!pwValidCheck && pwFirstClick)}
@@ -292,4 +295,4 @@ const JoinBox = () => {
   );
 };
 
-export default JoinBox;
+export default SignupBox;
