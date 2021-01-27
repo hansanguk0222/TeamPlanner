@@ -1,5 +1,4 @@
 import React from 'react';
-import { sizeControll } from '@/utils/utils';
 
 export const MagnifyingGlass: React.FC = () => {
   return (
