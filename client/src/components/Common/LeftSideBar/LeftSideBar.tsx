@@ -2,7 +2,9 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Button, Input } from '@/styles/shared';
 import { MagnifyingGlass } from '@/public/svg';
+import useTeam from '@/hooks/useTeam';
 import LeftSideBarItem from './LeftSideBarItem/LeftSideBarItem';
+import { getUserId } from '@/utils/utils';
 
 const Container = styled.div`
   width: 20rem;
@@ -61,14 +63,21 @@ const MakeTeamButton = styled(Button)`
   align-items: center;
 `;
 
-const LeftSideBar: React.FC<{ myPage: boolean; items: Array<{ name: string; id: number; check: boolean }> }> = ({
-  myPage,
-  items,
-}: {
-  myPage: boolean;
+const LeftSideBar: React.FC<{
+  isMyPage: boolean;
   items: Array<{ name: string; id: number; check: boolean }>;
+  setCreateTeamModalVisible: (state: boolean) => void | undefined;
+}> = ({
+  isMyPage,
+  items,
+  setCreateTeamModalVisible,
+}: {
+  isMyPage: boolean;
+  items: Array<{ name: string; id: number; check: boolean }>;
+  setCreateTeamModalVisible: (state: boolean) => void | undefined;
 }) => {
   const [sideBarItems, pickSideBarItem] = useState(items);
+  const { err, onGetTeamListRequest, onGetJoinTeamList } = useTeam();
 
   const handlePickSideBarItem = ({ id, name }: { id: number; name: string }) => {
     const changePickState = sideBarItems.map((item) => {
@@ -85,13 +94,22 @@ const LeftSideBar: React.FC<{ myPage: boolean; items: Array<{ name: string; id: 
     });
 
     pickSideBarItem(changePickState);
+
+    if (name === '참여한 팀') {
+      const userId = getUserId();
+      if (userId) {
+        onGetJoinTeamList({ userId: +userId });
+      }
+    } else if (name === '모든 팀 정보') {
+      onGetTeamListRequest({ firstLoad: false });
+    }
   };
 
   return (
     <Container>
       <UpperContainer>
         <UserWelcomText>누구누구님 환영합니다.</UserWelcomText>
-        {myPage && (
+        {isMyPage && setCreateTeamModalVisible && (
           <>
             <InputBox>
               <Icon>
@@ -99,7 +117,7 @@ const LeftSideBar: React.FC<{ myPage: boolean; items: Array<{ name: string; id: 
               </Icon>
               <FindTeamInput placeholder="팀 이름 검색" />
             </InputBox>
-            <MakeTeamButton>New Team</MakeTeamButton>
+            <MakeTeamButton onClick={() => setCreateTeamModalVisible(true)}>New Team</MakeTeamButton>
           </>
         )}
       </UpperContainer>
