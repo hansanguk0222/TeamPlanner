@@ -2,7 +2,6 @@ import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '@/store/reducers';
 import { loginRequest, logoutRequest } from '@/store/actions/auth.action';
 import { useCallback } from 'react';
-import { AxiosError } from 'axios';
 
 const useAuth = () => {
   const loginLoading = useSelector((state: RootState) => state.authReducers.login.loading);
