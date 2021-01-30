@@ -19,6 +19,7 @@ export const ERROR_MESSAGE = {
   OVERLAP_EMAIL: '존재하는 이메일',
   FILE_UPLOAD: '파일 업로드 중 에러',
   LOGOUT_FAIL: '로그아웃 실패',
+  IS_NOT_JOINED_USER: '팀에 가입하지 않은 회원',
 };
 
 export const TIME = {
