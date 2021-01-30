@@ -9,4 +9,5 @@ router.get('/logout', authRouter.userLogout);
 router.post('/join', authRouter.userJoin);
 router.post('/email/join', authRouter.isExistUser);
 router.post('/email/code', authRouter.sendEmail);
+router.get('/token/refresh', authRouter.refreshAccessToken);
 export default router;
