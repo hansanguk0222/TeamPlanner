@@ -36,6 +36,7 @@ module.exports = {
     'no-case-declarations': 'off',
     '@typescript-eslint/no-unused-vars': ['off'],
     camelcase: 'off',
+    'react/require-default-props': 'off',
     'import/extensions': [
       'error',
       'always',
