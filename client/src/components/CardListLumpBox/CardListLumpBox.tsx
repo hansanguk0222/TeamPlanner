@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
+import useWindowSize from '@/hooks/useWindowSize';
 import styled from 'styled-components';
 import useCardList from '@/hooks/useCardList';
 import { Button } from '@/styles/shared';
@@ -52,11 +53,32 @@ const CardListLumpBox: React.FC<CardListLumpBoxProps> = ({
   const { cardListLump } = useCardList();
   const [repeatNumber, setRepeatNumber] = useState(0);
   const [containerWidth, setContainerWidth] = useState(0);
+  const [beginCardListWidth, setBeginCardListWidth] = useState(0);
 
-  useEffect(() => {
+  const handleWindowSizeChange = () => {
     let width = window.innerWidth - 320;
     width -= width * 0.0005;
     setContainerWidth(width);
+  };
+
+  const handleSetBeginCardListWidth = () => {
+    let width = window.innerWidth - 320;
+    width -= width * 0.0005;
+    setBeginCardListWidth(width / 3.07);
+  };
+
+  useWindowSize({ handleWindowSizeChange });
+
+  useEffect(() => {
+    handleWindowSizeChange();
+    handleSetBeginCardListWidth();
+  }, []);
+
+  useEffect(() => {
+    console.log(beginCardListWidth);
+  }, [beginCardListWidth]);
+
+  useEffect(() => {
     if (cardListLump) {
       setRepeatNumber(cardListLump.length);
     }
@@ -74,7 +96,7 @@ const CardListLumpBox: React.FC<CardListLumpBoxProps> = ({
             <CardList
               setSelectCardList={setSelectCardList}
               setCreateCardModalVisible={setCreateCardModalVisible}
-              width={containerRef.current.clientWidth / 3.07}
+              width={beginCardListWidth}
               cardList={cardList}
               key={cardList.id}
             />
