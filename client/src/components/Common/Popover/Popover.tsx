@@ -128,10 +128,6 @@ const Popover: React.FC<PopoverProps> = ({
     handlePopupPositionChange();
   }, [windowSize]);
 
-  const test = () => {
-    console.log(popoverItems);
-  };
-
   return (
     { visible } && (
       <TopLayer>
