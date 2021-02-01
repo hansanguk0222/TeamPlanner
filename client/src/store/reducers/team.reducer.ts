@@ -2,11 +2,15 @@ import {
   GET_TEAMLIST_ERROR,
   GET_TEAMLIST_SUCCESS,
   GET_TEAMLIST_REQUEST,
-  GET_JOIN_TEAMLIST,
   getTeamListSuccess,
   getTeamListError,
   getTeamListRequest,
-  getJoinTeamList,
+  CHECK_JOINED_USER_ERROR,
+  CHECK_JOINED_USER_REQUEST,
+  CHECK_JOINED_USER_SUCCESS,
+  checkJoinedUserError,
+  checkJoinedUserRequest,
+  checkJoinedUserSuccess,
 } from '@/store/actions/team.action';
 import { TeamState } from '@/types';
 
@@ -14,24 +18,33 @@ type teamActionType =
   | ReturnType<typeof getTeamListRequest>
   | ReturnType<typeof getTeamListSuccess>
   | ReturnType<typeof getTeamListError>
-  | ReturnType<typeof getJoinTeamList>;
+  | ReturnType<typeof checkJoinedUserRequest>
+  | ReturnType<typeof checkJoinedUserSuccess>
+  | ReturnType<typeof checkJoinedUserError>;
 
 const initialState: TeamState = {
-  loading: false,
-  err: null,
+  getTeamList: {
+    loading: false,
+    err: null,
+  },
+  checkJoinedUser: {
+    loading: false,
+    err: null,
+    status: null,
+  },
   teamList: null,
-  firstLoad: false,
 };
 
 const teamReducers = (state: TeamState = initialState, action: teamActionType) => {
   switch (action.type) {
-    case GET_TEAMLIST_REQUEST:
+    case GET_TEAMLIST_REQUEST: {
       return {
         ...state,
         loading: true,
         err: null,
       };
-    case GET_TEAMLIST_SUCCESS:
+    }
+    case GET_TEAMLIST_SUCCESS: {
       const { teamList, firstLoad } = action.payload;
       return {
         ...state,
@@ -40,7 +53,8 @@ const teamReducers = (state: TeamState = initialState, action: teamActionType) =
         teamList,
         firstLoad,
       };
-    case GET_TEAMLIST_ERROR:
+    }
+    case GET_TEAMLIST_ERROR: {
       const { err } = action.payload;
       return {
         ...state,
@@ -48,15 +62,40 @@ const teamReducers = (state: TeamState = initialState, action: teamActionType) =
         err,
         teamList: null,
       };
-    case GET_JOIN_TEAMLIST:
-      const { userId } = action.payload;
-      const joinTeamList = state.teamList?.filter((team) => team.joinUsers.some((user) => user.id === userId));
+    }
+    case CHECK_JOINED_USER_REQUEST: {
       return {
         ...state,
-        loading: false,
-        err,
-        teamList: joinTeamList,
+        checkJoinedUser: {
+          loading: true,
+          err: null,
+          status: null,
+        },
       };
+    }
+    case CHECK_JOINED_USER_SUCCESS: {
+      const { status } = action.payload;
+      return {
+        ...state,
+        checkJoinedUser: {
+          loading: false,
+          err: null,
+          status,
+        },
+      };
+    }
+    case CHECK_JOINED_USER_ERROR: {
+      const { err } = action.payload;
+      const status = err.response?.status;
+      return {
+        ...state,
+        checkJoinedUser: {
+          loading: false,
+          err,
+          status,
+        },
+      };
+    }
     default: {
       return state;
     }
