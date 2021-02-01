@@ -4,8 +4,8 @@ interface Config {
 }
 
 const config: Config = {
-  JWT_SECRET: process.env.REACT_APP_JWT_SECRET as string,
-  JWT_REFRESH_SECRET: process.env.REACT_APP_JWT_REFRESH_SECRET as string,
+  JWT_SECRET: process.env.JWT_SECRET as string,
+  JWT_REFRESH_SECRET: process.env.JWT_REFRESH_SECRET as string,
 };
 
 export default config;

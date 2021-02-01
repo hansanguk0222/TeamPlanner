@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { verifyRequestData } from '@/utils/utils';
 import { ERROR_MESSAGE } from '@/utils/contants';
-import { cardModel } from '@/models';
+import { cardModel, cardListModel } from '@/models';
 
 // GET /card/cardList/:cardListId
 export const getCards = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
@@ -21,8 +21,9 @@ export const createCard = async (req: Request, res: Response, next: NextFunction
   const { cardListId } = req.params;
   if (verifyRequestData([content, cardOrder])) {
     try {
-      const [card] = await cardModel.createCard({ content, cardListId: +cardListId, cardOrder: +cardOrder });
-      res.status(201).json(card);
+      const [result] = await cardModel.createCard({ content, cardListId: +cardListId, cardOrder: +cardOrder });
+      await cardListModel.increaseCardCount({ id: +cardListId });
+      res.status(201).json({ id: result.insertId });
       return;
     } catch (err) {
       next(err);

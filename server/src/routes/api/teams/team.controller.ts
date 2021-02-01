@@ -8,7 +8,7 @@ export const getTeamList = async (req: Request, res: Response, next: NextFunctio
     const teamListAndJoinUsers = await Promise.all(
       teamList.map(async (team: Team) => {
         try {
-          const [joinUsers] = await teamModel.getTeamUsers({ teamId: team.id });
+          const [joinUsers] = await teamModel.getTeamUsers({ id: team.id });
           return { ...team, joinUsers };
         } catch (err) {
           next(err);

@@ -21,6 +21,7 @@ instance.interceptors.request.use(
 
           if (status === 200) {
             localStorage.setItem('accessToken', data.accessToken);
+            localStorage.setItem('userId', data.userId);
             return {
               ...config,
               headers: { ...config.headers, Authorization: `Bearer ${data.accessToken}` },

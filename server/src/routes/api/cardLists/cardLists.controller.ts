@@ -21,8 +21,8 @@ export const createCardList = async (req: Request, res: Response, next: NextFunc
   const { teamId } = req.params;
   if (verifyRequestData([cardListName])) {
     try {
-      await cardListModel.createCardList({ teamId: +teamId, cardListName });
-      res.status(201).json({ message: 'ok' });
+      const [result] = await cardListModel.createCardList({ teamId: +teamId, cardListName });
+      res.status(201).json({ id: result.insertId });
       return;
     } catch (err) {
       next(err);

@@ -16,6 +16,8 @@ interface Config {
       pass: string;
     };
   };
+  googleClientId: string;
+  googleClientPw: string;
 }
 
 const config: Config = {
@@ -52,6 +54,8 @@ const config: Config = {
       pass: process.env.NODE_MAILER_PW as string,
     },
   },
+  googleClientId: process.env.GOOGLE_CLIENT_ID as string,
+  googleClientPw: process.env.GOOGLE_CLIENT_PW as string,
 };
 
 export default config;

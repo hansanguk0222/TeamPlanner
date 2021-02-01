@@ -1,24 +1,23 @@
 import pool from '@/db';
 import { Model } from '@/types';
-import { profile } from 'console';
 
 export const userModel: Model = {
-  updateUserProfileImage({ userId, profileImage }: { userId: number; profileImage: string }): any {
+  updateUserProfileImage({ id, profileImage }: { id: number; profileImage: string }): any {
     const sql = 'UPDATE user SET profile_image=? WHERE id=?';
-    return pool.execute(sql, [profileImage, userId]);
+    return pool.execute(sql, [profileImage, id]);
   },
-  updateUserProfileNickname({ userId, nickname }: { userId: number; nickname: string }): any {
+  updateUserProfileNickname({ id, nickname }: { id: number; nickname: string }): any {
     const sql = `UPDATE user SET nickname=? WHERE id=?`;
-    return pool.execute(sql, [nickname, userId]);
+    return pool.execute(sql, [nickname, id]);
   },
-  getUserById({ userId }: { userId: number }) {
+  getUserById({ id }: { id: number }) {
     const sql = `SELECT id, email, nickname, profile_image as profileImage 
     FROM user
     WHERE id=?`;
-    return pool.execute(sql, [userId]);
+    return pool.execute(sql, [id]);
   },
   login({ email }: { email: string }) {
-    const sql = `SELECT id, email, pw, nickname, profile_image
+    const sql = `SELECT id, email, pw, nickname, profile_image as profileImage
     FROM user
     WHERE email=?`;
     return pool.execute(sql, [email]);
@@ -38,5 +37,9 @@ export const userModel: Model = {
   setRefreshToken({ id, refreshToken }: { id: number; refreshToken: string }) {
     const sql = `UPDATE user SET refreshToken=? WHERE id=?`;
     return pool.execute(sql, [refreshToken, id]);
+  },
+  getRefreshToken({ id }: { id: number }) {
+    const sql = `SELECT refreshToken FROM user WHERE id=?`;
+    return pool.execute(sql, [id]);
   },
 };

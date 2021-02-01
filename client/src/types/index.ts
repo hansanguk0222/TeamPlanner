@@ -6,6 +6,11 @@ export interface AuthState {
     err: AxiosError | null;
     status: number | null;
   };
+  logout: {
+    loading: boolean;
+    err: AxiosError | null;
+    status: number | null;
+  };
 }
 
 export interface LoginPayload {
@@ -18,6 +23,15 @@ export interface LoginSuccessPayload {
 }
 
 export interface LoginErrorPayload {
+  status: number;
+  err: AxiosError;
+}
+
+export interface LogoutSuccessPayload {
+  status: number;
+}
+
+export interface LogoutErrorPayload {
   status: number;
   err: AxiosError;
 }
@@ -72,24 +86,139 @@ export interface JoinErrorPayload {
 
 export interface Team {
   id: number;
-  teanName: string;
-  memberCnt: number;
-  isJoin: boolean;
+  teamName: string;
+  joinUsers: User[];
 }
 
-export interface MyPageState {
+export interface User {
+  id: number;
+  email: string;
+  nickname: string;
+  profileImage: string;
+}
+
+export interface UserState {
+  getUser: {
+    loading: boolean;
+    err: AxiosError | null;
+  };
+  user: User | null;
+}
+
+export interface TeamState {
   getTeamList: {
     loading: boolean;
     err: AxiosError | null;
-    TeamList: Team[] | null;
   };
+  checkJoinedUser: {
+    loading: boolean;
+    err: AxiosError | null;
+    status: number | null;
+  };
+  teamList: Team[] | null;
+}
+
+export interface GetTeamListRequestPayload {
+  firstLoad: boolean;
 }
 
 export interface GetTeamListSuccessPayload {
-  TeamList: Team[];
+  teamList: Team[];
+  firstLoad: boolean;
 }
 
 export interface GetTeamListErrorPayload {
+  err: AxiosError;
+}
+
+export interface GetUserSuccessPayload {
+  user: User;
+}
+
+export interface GetUserErrorPayload {
+  err: AxiosError;
+}
+
+export interface CheckJoinedUserRequestPayload {
+  userId: number;
+  teamId: number;
+}
+
+export interface CheckJoinedUserSuccessPayload {
+  status: number;
+}
+
+export interface CheckJoinedUserErrorPayload {
+  err: AxiosError;
+}
+
+export interface Card {
+  id: number;
+  content: string;
+  cardListId: number;
+  cardOrder: number;
+}
+
+export interface CardList {
+  id: number;
+  cardListName: string;
+  teamId: number;
+  cardCount: number;
+  cards?: Card[];
+}
+
+export interface CardListStatus {
+  getCardListLump: {
+    loading: boolean;
+    err: AxiosError | null;
+  };
+  createCardList: {
+    loading: boolean;
+    err: AxiosError | null;
+  };
+  createCard: {
+    loading: boolean;
+    err: AxiosError | null;
+  };
+  cardListLump: CardList[] | null;
+}
+
+export interface GetCardListLumpRequestPayload {
+  teamId: number;
+}
+
+export interface GetCardListLumpSuccessPayload {
+  cardListLump: CardList[];
+}
+
+export interface GetCardListLumpErrorPayload {
+  err: AxiosError;
+}
+
+export interface CreateCardListRequestPayload {
+  cardListName: string;
+  teamId: number;
+}
+
+export interface CreateCardListSuccessPayload {
+  cardList: CardList;
+}
+
+export interface CreateCardListErrorPayload {
+  err: AxiosError;
+}
+
+export interface CreateCardRequestPayload {
+  cardListId: number;
+  content: string;
+  cardOrder: number;
+}
+
+export interface CreateCardSuccessPayload {
+  card: Card;
+}
+
+export interface CreateCardErrorPayload {
   err: AxiosError;
 }
 
@@ -101,6 +230,15 @@ export interface PopoverProps {
   transformOrigin: { transformVertical: string; transformHorizontal: string };
   visible: boolean;
   setVisible: React.Dispatch<React.SetStateAction<boolean>>;
+  popoverItems: Array<{ name: string; callback?: () => void }>;
+}
+
+export interface HandleMyInformPopupVisibleType {
+  handleMyInformPopupVisible: () => void;
+}
+
+export interface URLParams {
+  teamId: string | undefined;
 }
 
 export type AuthToken = 'ACCESS' | 'REFRESH';

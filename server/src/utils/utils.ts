@@ -1,3 +1,6 @@
+import config from '@/config';
+import jwt from 'jsonwebtoken';
+
 export const verifyRequestData = (arr: any[]): boolean =>
   arr.every((ele) => {
     return ele !== undefined && ele !== null;
@@ -10,4 +13,19 @@ export const randomCode = (): string => {
     code += charecters[Math.floor(Math.random() * charecters.length)];
   }
   return code;
+};
+
+export const verfiyRefreshToken = ({ refreshToken }: { refreshToken: string }): Promise<any> => {
+  return new Promise((resolve, reject) => {
+    jwt.verify(refreshToken, config.jwtRefreshSecret, (err, decoded) => {
+      if (err) {
+        reject(err);
+        return;
+      }
+
+      if (decoded) {
+        resolve(decoded);
+      }
+    });
+  });
 };

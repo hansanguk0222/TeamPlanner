@@ -1,14 +1,5 @@
 import { all, fork, call, put, takeLatest } from 'redux-saga/effects';
-import {
-  loginRequest,
-  LOGIN_REQUEST,
-  LOGIN_SUCCESS,
-  LOGIN_ERROR,
-  logoutRequest,
-  LOGOUT_REQUEST,
-  LOGOUT_SUCCESS,
-  LOGOUT_ERROR,
-} from '@/store/actions/auth.action';
+import { loginRequest, LOGIN_REQUEST, LOGIN_SUCCESS, LOGIN_ERROR, LOGOUT_REQUEST, LOGOUT_SUCCESS, LOGOUT_ERROR } from '@/store/actions/auth.action';
 import { authService } from '@/services';
 
 function* login({ payload }: ReturnType<typeof loginRequest>) {
@@ -16,8 +7,10 @@ function* login({ payload }: ReturnType<typeof loginRequest>) {
     const { email, pw } = payload;
     const { data, status } = yield call(authService.login, { email, pw });
     const { accessToken } = data;
+    const { userId } = data;
     if (status === 200) {
       localStorage.setItem('accessToken', accessToken);
+      localStorage.setItem('userId', userId);
       yield put({ type: LOGIN_SUCCESS, payload: { status } });
     }
   } catch (err) {
@@ -34,6 +27,7 @@ function* logout() {
     const { status } = yield call(authService.logout);
     if (status === 200) {
       localStorage.removeItem('accessToken');
+      localStorage.removeItem('userId');
       yield put({ type: LOGOUT_SUCCESS, payload: { status } });
     }
   } catch (err) {

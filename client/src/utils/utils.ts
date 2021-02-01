@@ -1,7 +1,5 @@
 import jwt from 'jsonwebtoken';
 import config from '@/config';
-import { TOKEN_TYPE } from '@/utils/contants';
-import { AuthToken } from '@/types';
 
 export const isValidLoginEmail = ({
   setEmailValidCheck,
@@ -106,4 +104,11 @@ export const isAccessTokenAlive = (): boolean => {
     return true;
   }
   return false;
+};
+
+export const getUserId = (): number | void => {
+  const userId = localStorage.getItem('userId');
+  if (userId) {
+    return +userId;
+  }
 };

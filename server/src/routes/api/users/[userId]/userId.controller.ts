@@ -26,18 +26,18 @@ export const updateUserProfile = (req: Request, res: Response, next: NextFunctio
         res.status(400).json({ message: ERROR_MESSAGE.NOT_ALLOWED_FILE_TYPE });
         return;
       }
-      const fileName = file.name;
+      const fileName = `${userId}_profile`;
       const oldPath = file.path;
-      profileImage = `${req.protocol}://${req.get('host')}/src/public/profile/${file.name}`;
+      profileImage = `${req.protocol}://${req.get('host')}/profile/${fileName}.${fileType[1]}`;
       const rawData = await fs.readFile(oldPath);
 
-      await fs.writeFile(`./src/public/profile/${fileName}`, rawData).catch((err) => {
+      await fs.writeFile(`./src/public/profile/${fileName}.${fileType[1]}`, rawData).catch((err) => {
         check = false;
         next(err);
       });
 
-      await userModel.updateUserProfileNickname({ userId: +userId, nickname });
-      await userModel.updateUserProfileImage({ userId: +userId, profileImage });
+      await userModel.updateUserProfileNickname({ id: +userId, nickname });
+      await userModel.updateUserProfileImage({ id: +userId, profileImage });
 
       if (check) {
         res.status(200).end();
@@ -48,7 +48,7 @@ export const updateUserProfile = (req: Request, res: Response, next: NextFunctio
 export const getUser = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   const { userId } = req.params;
   try {
-    const [user] = await userModel.getUserById({ userId: +userId });
+    const [[user]] = await userModel.getUserById({ id: +userId });
     res.status(200).json({ user });
     return;
   } catch (err) {

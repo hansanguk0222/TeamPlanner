@@ -3,3 +3,4 @@ export { cardModel } from './cardModel';
 export { logModel } from './logModel';
 export { teamModel } from './teamModel';
 export { userModel } from './userModel';
+export { userTeamModel } from './userTeamModel';

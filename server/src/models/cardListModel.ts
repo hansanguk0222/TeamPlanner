@@ -11,12 +11,16 @@ export const cardListModel: Model = {
     const sql = `INSERT INTO cardList (team_id, cardList_name) VALUES (?, ?)`;
     return pool.execute(sql, [teamId, cardListName]);
   },
-  deleteCardList({ cardListId }: { cardListId: number }) {
+  deleteCardList({ id }: { id: number }) {
     const sql = `UPDATE cardList SET is_deleted=1 WHERE id=?`;
-    return pool.execute(sql, [cardListId]);
+    return pool.execute(sql, [id]);
   },
-  updateCardListName({ cardListId, cardListName }: { cardListId: number; cardListName: string }) {
+  updateCardListName({ id, cardListName }: { id: number; cardListName: string }) {
     const sql = `UPDATE cardList SET cardList_name=? WHERE id=?`;
-    return pool.execute(sql, [cardListName, cardListId]);
+    return pool.execute(sql, [cardListName, id]);
+  },
+  increaseCardCount({ id }: { id: number }) {
+    const sql = `UPDATE cardList SET card_count = card_count + 1 WHERE id=?`;
+    return pool.execute(sql, [id]);
   },
 };

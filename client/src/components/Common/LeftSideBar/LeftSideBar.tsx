@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Button, Input } from '@/styles/shared';
 import { MagnifyingGlass } from '@/public/svg';
+import useUser from '@/hooks/useUser';
 import LeftSideBarItem from './LeftSideBarItem/LeftSideBarItem';
 
 const Container = styled.div`
-  width: 20rem;
+  min-width: 15rem;
   background: ${(props) => props.theme.color.black3};
   display: flex;
   flex-direction: column;
@@ -61,14 +62,24 @@ const MakeTeamButton = styled(Button)`
   align-items: center;
 `;
 
-const LeftSideBar: React.FC<{ myPage: boolean; items: Array<{ name: string; id: number; check: boolean }> }> = ({
-  myPage,
-  items,
-}: {
-  myPage: boolean;
+const LeftSideBar: React.FC<{
+  isMyPage: boolean;
   items: Array<{ name: string; id: number; check: boolean }>;
+  setCreateTeamModalVisible?: (state: boolean) => void;
+  setShowJoinedTeamListVisible?: (state: boolean) => void;
+}> = ({
+  isMyPage,
+  items,
+  setCreateTeamModalVisible,
+  setShowJoinedTeamListVisible,
+}: {
+  isMyPage: boolean;
+  items: Array<{ name: string; id: number; check: boolean }>;
+  setCreateTeamModalVisible?: (state: boolean) => void;
+  setShowJoinedTeamListVisible?: (state: boolean) => void;
 }) => {
   const [sideBarItems, pickSideBarItem] = useState(items);
+  const { user } = useUser();
 
   const handlePickSideBarItem = ({ id, name }: { id: number; name: string }) => {
     const changePickState = sideBarItems.map((item) => {
@@ -85,13 +96,23 @@ const LeftSideBar: React.FC<{ myPage: boolean; items: Array<{ name: string; id: 
     });
 
     pickSideBarItem(changePickState);
+
+    if (name === '참여한 팀') {
+      if (setShowJoinedTeamListVisible) {
+        setShowJoinedTeamListVisible(true);
+      }
+    } else if (name === '모든 팀 정보') {
+      if (setShowJoinedTeamListVisible) {
+        setShowJoinedTeamListVisible(false);
+      }
+    }
   };
 
   return (
     <Container>
       <UpperContainer>
-        <UserWelcomText>누구누구님 환영합니다.</UserWelcomText>
-        {myPage && (
+        <UserWelcomText>{user?.nickname}님 환영합니다.</UserWelcomText>
+        {isMyPage && setCreateTeamModalVisible && (
           <>
             <InputBox>
               <Icon>
@@ -99,7 +120,7 @@ const LeftSideBar: React.FC<{ myPage: boolean; items: Array<{ name: string; id: 
               </Icon>
               <FindTeamInput placeholder="팀 이름 검색" />
             </InputBox>
-            <MakeTeamButton>New Team</MakeTeamButton>
+            <MakeTeamButton onClick={() => setCreateTeamModalVisible(true)}>New Team</MakeTeamButton>
           </>
         )}
       </UpperContainer>

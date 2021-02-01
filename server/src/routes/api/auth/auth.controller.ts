@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 import passport from 'passport';
 import config from '@/config';
 import bcrypt from 'bcrypt';
-import { verifyRequestData, randomCode } from '@/utils/utils';
+import { verifyRequestData, randomCode, verfiyRefreshToken } from '@/utils/utils';
 import { ERROR_MESSAGE, TIME } from '@/utils/contants';
 import { userModel } from '@/models';
 import nodemailer from 'nodemailer';
@@ -23,8 +23,10 @@ export const userLogin = (req: Request, res: Response, next: NextFunction): void
         next(err);
       }
 
-      const accessToken = jwt.sign({ user }, config.jwtSecret, { expiresIn: TIME.FIVE_MINUTE });
-      const refreshToken = jwt.sign({ user }, config.jwtRefreshSecret, {
+      const { pw, ...claims } = user;
+
+      const accessToken = jwt.sign({ user: claims }, config.jwtSecret, { expiresIn: TIME.FIVE_MINUTE });
+      const refreshToken = jwt.sign({ user: claims }, config.jwtRefreshSecret, {
         expiresIn: TIME.TWO_MONTH,
       });
 
@@ -35,7 +37,7 @@ export const userLogin = (req: Request, res: Response, next: NextFunction): void
           maxAge: TIME.TWO_MONTH * 1000,
           httpOnly: true,
         });
-        res.json({ user, accessToken });
+        res.json({ userId: user.id, accessToken });
         return;
       } catch (err) {
         next(err);
@@ -112,6 +114,21 @@ export const sendEmail = async (req: Request, res: Response, next: NextFunction)
     res.status(200).json({ authorizeCode });
     return;
   } catch (err) {
+    next(err);
+  }
+};
+
+export const refreshAccessToken = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  const { refreshTokenKey } = req.cookies;
+  try {
+    const [[result]] = await userModel.getRefreshToken({ id: +refreshTokenKey });
+    const { refreshToken } = result;
+    const decoded = await verfiyRefreshToken({ refreshToken });
+    const { iat, exp, ...claims } = decoded;
+    const accessToken = jwt.sign({ user: claims }, config.jwtSecret, { expiresIn: TIME.FIVE_MINUTE });
+    res.status(200).json({ userId: claims.user.id, accessToken });
+  } catch (err) {
+    res.status(401).json({ message: ERROR_MESSAGE.INVALID_TOKEN });
     next(err);
   }
 };

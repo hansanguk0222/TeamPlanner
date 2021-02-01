@@ -1,5 +1,6 @@
 import passport from 'passport';
 import passportJWT from 'passport-jwt';
+import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
 import { Strategy as LocalStrategy } from 'passport-local';
 import { userModel } from '@/models';
 import { ERROR_MESSAGE } from '@/utils/contants';
@@ -41,11 +42,24 @@ export default () => {
       },
       async (jwtPayload, done) => {
         try {
-          const [user] = await userModel.getUserById({ userId: +jwtPayload.id });
+          const [user] = await userModel.getUserById({ id: +jwtPayload.id });
           return done(null, user);
         } catch (err) {
           return done(err);
         }
+      },
+    ),
+  );
+
+  passport.use(
+    new GoogleStrategy(
+      {
+        clientID: config.googleClientId,
+        clientSecret: config.googleClientPw,
+        callbackURL: 'http://localhost:8080/auth/google/callback',
+      },
+      (accessToken, refreshToken, profile, done) => {
+        return done('null', profile);
       },
     ),
   );
