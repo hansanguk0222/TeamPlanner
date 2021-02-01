@@ -7,12 +7,16 @@ import { isAccessTokenAlive, getUserId } from '@/utils/utils';
 import useTeam from '@/hooks/useTeam';
 import useUser from '@/hooks/useUser';
 import useCardList from '@/hooks/useCardList';
-import { URLParmas } from '@/types';
+import { URLParams } from '@/types';
+import CreateCardModal from '@/components/Common/Modal/CreateCardModal/CreateCardModal';
+import CreateCardListModal from '@/components/Common/Modal/CreateCardListModal/CreateCardListModal';
+import Modal from '@/components/Common/Modal/Modal';
 import CardListLumpBox from '@/components/CardListLumpBox/CardListLumpBox';
 
 const Container = styled.div`
   display: flex;
   height: 100%;
+  width: 100%;
 `;
 
 const MainContentBox = styled.div`
@@ -24,11 +28,13 @@ const MainContentBox = styled.div`
 
 const CardListLumpPage = () => {
   const history = useHistory();
-  const [createTeamModalVisible, setCreateTeamModalVisible] = useState(false);
+  const [createCardModalVisible, setCreateCardModalVisible] = useState(false);
+  const [createCardListModalVisible, setCreateCardListModalVisible] = useState(false);
+  const [selectCardList, setSelectCardList] = useState(0);
   const { onGetUserRequest } = useUser();
   const { onGetCardListLumpRequest } = useCardList();
   const { checkJoinedUserStatus, onCheckJoinedUserRequest } = useTeam();
-  const { teamId }: URLParmas = useParams();
+  const { teamId }: URLParams = useParams();
 
   useEffect(() => {
     if (!isAccessTokenAlive()) {
@@ -55,19 +61,32 @@ const CardListLumpPage = () => {
 
   return (
     <>
+      {createCardModalVisible && (
+        <Modal visible={createCardModalVisible} setVisible={setCreateCardModalVisible} modalHeader="카드 추가">
+          <CreateCardModal selectCardList={selectCardList} setCreateCardModalVisible={setCreateCardModalVisible} />
+        </Modal>
+      )}
+      {createCardListModalVisible && (
+        <Modal visible={createCardListModalVisible} setVisible={setCreateCardListModalVisible} modalHeader="카드리스트 추가">
+          <CreateCardListModal setCreateCardListModalVisible={setCreateCardListModalVisible} />
+        </Modal>
+      )}
       <Container>
         <LeftSideBar
-          isMyPage
+          isMyPage={false}
           items={[
             { name: '작업 기록 보기', id: 0, check: true },
             { name: '새로운 사람 초대하기', id: 1, check: false },
             { name: '팀원 정보보기', id: 2, check: false },
           ]}
-          setCreateTeamModalVisible={setCreateTeamModalVisible}
         />
         <MainContentBox>
           <Header />
-          <CardListLumpBox />
+          <CardListLumpBox
+            setSelectCardList={setSelectCardList}
+            setCreateCardListModalVisible={setCreateCardListModalVisible}
+            setCreateCardModalVisible={setCreateCardModalVisible}
+          />
         </MainContentBox>
       </Container>
     </>
