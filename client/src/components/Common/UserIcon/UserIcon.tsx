@@ -1,13 +1,16 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
-import Popover from '../Popover/Popover';
 import useAuth from '@/hooks/useAuth';
+import useUser from '@/hooks/useUser';
+import Popover from '../Popover/Popover';
 
 const Container = styled.div`
   width: 2.5rem;
   height: 2.5rem;
   position: absolute;
   right: 5%;
+  background: ${(props) => props.theme.color.black16};
+  border-radius: 3px;
 `;
 const UserImg = styled.img`
   display: block;
@@ -17,6 +20,7 @@ const UserImg = styled.img`
 `;
 
 const UserIcon: React.FC = () => {
+  const { user } = useUser();
   const ref = useRef<HTMLDivElement>(null);
   const [myInformPopoverVisible, setMyInformPopoverVisible] = useState(false);
   const { onLogoutRequest } = useAuth();
@@ -44,7 +48,7 @@ const UserIcon: React.FC = () => {
         />
       )}
       <Container ref={ref} onClick={handleMyInformPopupVisible}>
-        <UserImg src="http://localhost:3000/profile/abc.png" />
+        <UserImg src={user?.profileImage} />
       </Container>
     </>
   );
