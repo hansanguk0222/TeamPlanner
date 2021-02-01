@@ -1,12 +1,17 @@
 import React from 'react';
 import styled from 'styled-components';
+import { XButton } from '@/public/svg';
 
 const Container = styled.div`
   width: 100%;
   display: flex;
-  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   border: 2px solid orange;
-  border-radius: 3px;
+  border-radius: 5px;
+  padding: 0.5rem;
+  position: relative;
+  margin-bottom: 10px;
 `;
 
 const CardContent = styled.div`
@@ -14,36 +19,23 @@ const CardContent = styled.div`
   align-items: center;
   justify-content: center;
   font-size: ${(props) => props.theme.size.l};
-`;
-
-const ButtonBox = styled.div`
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: right;
+  padding: 1rem 0;
 `;
 
 const RemoveButton = styled.button`
-  width: 5rem;
-  font-size: ${(props) => props.theme.size.m};
-  margin-right: 5px;
-  background-color: ${(props) => props.theme.color.purple};
-`;
-
-const ChangeContentButton = styled.button`
-  width: 5rem;
-  font-size: ${(props) => props.theme.size.m};
-  background-color: ${(props) => props.theme.color.green};
+  position: absolute;
+  top: 5px;
+  right: 0;
+  border: none;
 `;
 
 const Card: React.FC<{ content: string }> = ({ content }: { content: string }) => {
   return (
     <Container>
       <CardContent>{content}</CardContent>
-      <ButtonBox>
-        <RemoveButton>삭제</RemoveButton>
-        <ChangeContentButton>변경</ChangeContentButton>
-      </ButtonBox>
+      <RemoveButton>
+        <XButton />
+      </RemoveButton>
     </Container>
   );
 };
