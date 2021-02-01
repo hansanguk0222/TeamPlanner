@@ -2,8 +2,6 @@ import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '@/store/reducers';
 import { authorizeEmailRequest, joinRequest, signupOverlapEmailRequest, signupOverlapEmailInitialize } from '@/store/actions/signup.action';
 import { useCallback } from 'react';
-import { AxiosError } from 'axios';
-import { stringify } from 'qs';
 
 const useSignup = () => {
   const isJoinOk = useSelector((state: RootState) => state.signupReducers.join.isJoinOk);
