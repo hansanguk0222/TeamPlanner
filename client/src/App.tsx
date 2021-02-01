@@ -12,10 +12,10 @@ const App = () => {
       <BrowserRouter>
         <Switch>
           <Route path="/" exact component={HomePage} />
-          <Route path="/mypage" component={MyPage} />
-          <Route path="/login" component={LoginPage} />
-          <Route path="/join" component={SignupPage} />
-          <Route path="/team" component={CardListLumpPage} />
+          <Route path="/mypage" exact component={MyPage} />
+          <Route path="/login" exact component={LoginPage} />
+          <Route path="/join" exact component={SignupPage} />
+          <Route path="/team/:teamId" exact component={CardListLumpPage} />
         </Switch>
       </BrowserRouter>
     </ThemeProvider>
