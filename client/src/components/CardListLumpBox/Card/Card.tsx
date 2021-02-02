@@ -1,8 +1,18 @@
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
 import styled from 'styled-components';
+import { useDrag } from 'react-dnd';
 import { XButton } from '@/public/svg';
+import { rgba } from 'polished';
 
-const Container = styled.div`
+interface ContainerProps {
+  isDragging: boolean;
+}
+
+const ItemTypes = {
+  CARD: 'card',
+};
+
+const Container = styled.div<ContainerProps>`
   width: 100%;
   display: flex;
   justify-content: center;
@@ -12,6 +22,11 @@ const Container = styled.div`
   padding: 0.5rem;
   position: relative;
   margin-bottom: 10px;
+  background: ${(props) => props.isDragging && rgba(0, 0, 0, 0.05)};
+`;
+
+const CardWrapper = styled.div`
+  width: 100%;
 `;
 
 const CardContent = styled.div`
@@ -29,13 +44,51 @@ const RemoveButton = styled.button`
   border: none;
 `;
 
-const Card: React.FC<{ content: string }> = ({ content }: { content: string }) => {
+const Card: React.FC<{
+  availableMakeCardRef: boolean;
+  handleSetUploadCardCompleteCnt: () => void;
+  id: number;
+  handleSetCardsY: ({ id, y }: { id: number; y: number | undefined }) => void;
+  content: string;
+}> = ({
+  availableMakeCardRef,
+  handleSetUploadCardCompleteCnt,
+  id,
+  handleSetCardsY,
+  content,
+}: {
+  availableMakeCardRef: boolean;
+  handleSetUploadCardCompleteCnt: () => void;
+  id: number;
+  handleSetCardsY: ({ id, y }: { id: number; y: number | undefined }) => void;
+  content: string;
+}) => {
+  const cardRef = useRef<HTMLDivElement>(null);
+  const [{ isDragging }, drag] = useDrag({
+    item: { type: ItemTypes.CARD, id },
+    collect: (monitor) => ({
+      isDragging: !!monitor.isDragging(),
+    }),
+  });
+
+  useEffect(() => {
+    handleSetUploadCardCompleteCnt();
+  }, []);
+
+  useEffect(() => {
+    if (availableMakeCardRef && cardRef.current) {
+      handleSetCardsY({ id, y: window.pageYOffset + cardRef.current?.getBoundingClientRect().y });
+    }
+  }, [availableMakeCardRef]);
+
   return (
-    <Container>
-      <CardContent>{content}</CardContent>
-      <RemoveButton>
-        <XButton />
-      </RemoveButton>
+    <Container ref={drag} isDragging={isDragging}>
+      <CardWrapper ref={cardRef}>
+        <CardContent>{content}</CardContent>
+        <RemoveButton>
+          <XButton />
+        </RemoveButton>
+      </CardWrapper>
     </Container>
   );
 };

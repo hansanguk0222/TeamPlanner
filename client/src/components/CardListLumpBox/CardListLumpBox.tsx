@@ -3,6 +3,8 @@ import useWindowSize from '@/hooks/useWindowSize';
 import styled from 'styled-components';
 import useCardList from '@/hooks/useCardList';
 import { Button } from '@/styles/shared';
+import { DndProvider } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
 import CardList from './CardList/CardList';
 
 interface ContainerProps {
@@ -49,7 +51,6 @@ const CardListLumpBox: React.FC<CardListLumpBoxProps> = ({
   setCreateCardListModalVisible,
   setSelectCardList,
 }: CardListLumpBoxProps) => {
-  const containerRef = useRef<HTMLDivElement>(null);
   const { cardListLump } = useCardList();
   const [repeatNumber, setRepeatNumber] = useState(0);
   const [containerWidth, setContainerWidth] = useState(0);
@@ -75,10 +76,6 @@ const CardListLumpBox: React.FC<CardListLumpBoxProps> = ({
   }, []);
 
   useEffect(() => {
-    console.log(beginCardListWidth);
-  }, [beginCardListWidth]);
-
-  useEffect(() => {
     if (cardListLump) {
       setRepeatNumber(cardListLump.length);
     }
@@ -89,19 +86,17 @@ const CardListLumpBox: React.FC<CardListLumpBoxProps> = ({
   };
 
   return (
-    <Container containerWidth={containerWidth} ref={containerRef} repeat={repeatNumber + 1}>
-      {cardListLump?.map(
-        (cardList) =>
-          containerRef.current && (
-            <CardList
-              setSelectCardList={setSelectCardList}
-              setCreateCardModalVisible={setCreateCardModalVisible}
-              width={beginCardListWidth}
-              cardList={cardList}
-              key={cardList.id}
-            />
-          ),
-      )}
+    <Container containerWidth={containerWidth} repeat={repeatNumber + 1}>
+      {cardListLump?.map((cardList) => (
+        <DndProvider backend={HTML5Backend} key={cardList.id}>
+          <CardList
+            setSelectCardList={setSelectCardList}
+            setCreateCardModalVisible={setCreateCardModalVisible}
+            width={beginCardListWidth}
+            cardList={cardList}
+          />
+        </DndProvider>
+      ))}
       <AddCardListButton onClick={handleSetCreateCardListModalVisible}>+</AddCardListButton>
     </Container>
   );
