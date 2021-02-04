@@ -1,7 +1,10 @@
 import React, { useEffect, useState, useRef } from 'react';
+import useWindowSize from '@/hooks/useWindowSize';
 import styled from 'styled-components';
 import useCardList from '@/hooks/useCardList';
 import { Button } from '@/styles/shared';
+import { DndProvider } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
 import CardList from './CardList/CardList';
 
 interface ContainerProps {
@@ -48,15 +51,31 @@ const CardListLumpBox: React.FC<CardListLumpBoxProps> = ({
   setCreateCardListModalVisible,
   setSelectCardList,
 }: CardListLumpBoxProps) => {
-  const containerRef = useRef<HTMLDivElement>(null);
   const { cardListLump } = useCardList();
   const [repeatNumber, setRepeatNumber] = useState(0);
   const [containerWidth, setContainerWidth] = useState(0);
+  const [beginCardListWidth, setBeginCardListWidth] = useState(0);
 
-  useEffect(() => {
+  const handleWindowSizeChange = () => {
     let width = window.innerWidth - 320;
     width -= width * 0.0005;
     setContainerWidth(width);
+  };
+
+  const handleSetBeginCardListWidth = () => {
+    let width = window.innerWidth - 320;
+    width -= width * 0.0005;
+    setBeginCardListWidth(width / 3.07);
+  };
+
+  useWindowSize({ handleWindowSizeChange });
+
+  useEffect(() => {
+    handleWindowSizeChange();
+    handleSetBeginCardListWidth();
+  }, []);
+
+  useEffect(() => {
     if (cardListLump) {
       setRepeatNumber(cardListLump.length);
     }
@@ -67,19 +86,17 @@ const CardListLumpBox: React.FC<CardListLumpBoxProps> = ({
   };
 
   return (
-    <Container containerWidth={containerWidth} ref={containerRef} repeat={repeatNumber + 1}>
-      {cardListLump?.map(
-        (cardList) =>
-          containerRef.current && (
-            <CardList
-              setSelectCardList={setSelectCardList}
-              setCreateCardModalVisible={setCreateCardModalVisible}
-              width={containerRef.current.clientWidth / 3.07}
-              cardList={cardList}
-              key={cardList.id}
-            />
-          ),
-      )}
+    <Container containerWidth={containerWidth} repeat={repeatNumber + 1}>
+      {cardListLump?.map((cardList) => (
+        <DndProvider backend={HTML5Backend} key={cardList.id}>
+          <CardList
+            setSelectCardList={setSelectCardList}
+            setCreateCardModalVisible={setCreateCardModalVisible}
+            width={beginCardListWidth}
+            cardList={cardList}
+          />
+        </DndProvider>
+      ))}
       <AddCardListButton onClick={handleSetCreateCardListModalVisible}>+</AddCardListButton>
     </Container>
   );

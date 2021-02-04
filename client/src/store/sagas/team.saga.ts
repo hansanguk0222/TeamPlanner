@@ -31,7 +31,6 @@ function* checkJoinedUser({ payload }: ReturnType<typeof checkJoinedUserRequest>
   try {
     const { teamId, userId } = payload;
     const { status } = yield call(teamService.isJoinedUser, { teamId, userId });
-    console.log(status);
     if (status === 200) {
       yield put({ type: CHECK_JOINED_USER_SUCCESS, payload: { status } });
     }

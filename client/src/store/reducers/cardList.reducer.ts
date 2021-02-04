@@ -124,6 +124,7 @@ const cardListReducers = (state: CardListStatus = initialState, action: cardList
       const { card } = action.payload;
       const cardListLump = state.cardListLump?.map((cardList) => {
         if (cardList.id === card.cardListId) {
+          cardList.cardCount += 1;
           cardList.cards?.push(card);
         }
         return cardList;
