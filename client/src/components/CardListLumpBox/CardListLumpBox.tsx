@@ -16,6 +16,7 @@ interface CardListLumpBoxProps {
   setSelectCardList: (state: number) => void;
   setCreateCardModalVisible: (state: boolean) => void;
   setCreateCardListModalVisible: (state: boolean) => void;
+  teamId: number;
 }
 
 const Container = styled.div<ContainerProps>`
@@ -50,6 +51,7 @@ const CardListLumpBox: React.FC<CardListLumpBoxProps> = ({
   setCreateCardModalVisible,
   setCreateCardListModalVisible,
   setSelectCardList,
+  teamId,
 }: CardListLumpBoxProps) => {
   const { cardListLump } = useCardList();
   const [repeatNumber, setRepeatNumber] = useState(0);
@@ -94,6 +96,7 @@ const CardListLumpBox: React.FC<CardListLumpBoxProps> = ({
             setCreateCardModalVisible={setCreateCardModalVisible}
             width={beginCardListWidth}
             cardList={cardList}
+            teamId={teamId}
           />
         </DndProvider>
       ))}

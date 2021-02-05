@@ -5,6 +5,7 @@ import {
   CheckJoinedUserRequestPayload,
   CheckJoinedUserSuccessPayload,
   CheckJoinedUserErrorPayload,
+  UpdateTeamMoveCntPayload,
 } from '@/types';
 
 export const GET_TEAMLIST_REQUEST = 'team/GET_TEMLIST_REQUEST' as const;
@@ -13,6 +14,7 @@ export const GET_TEAMLIST_ERROR = 'team/GET_TEAMLIST_ERROR' as const;
 export const CHECK_JOINED_USER_REQUEST = 'team/CHECK_JOINED_USER_REQUEST' as const;
 export const CHECK_JOINED_USER_SUCCESS = 'team/CHECK_JOINED_USER_SUCCESS' as const;
 export const CHECK_JOINED_USER_ERROR = 'team/CHECK_JOINED_USER_ERROR' as const;
+export const UPDATE_TEAM_MOVECNT = 'team/UPDATE_TEAM_MOVECNT' as const;
 
 export const getTeamListRequest = ({ firstLoad }: GetTeamListRequestPayload) => ({
   type: GET_TEAMLIST_REQUEST,
@@ -42,4 +44,9 @@ export const checkJoinedUserSuccess = ({ status }: CheckJoinedUserSuccessPayload
 export const checkJoinedUserError = ({ err }: CheckJoinedUserErrorPayload) => ({
   type: CHECK_JOINED_USER_ERROR,
   payload: { err },
+});
+
+export const updateTeamMoveCnt = ({ teamId }: UpdateTeamMoveCntPayload) => ({
+  type: UPDATE_TEAM_MOVECNT,
+  payload: { teamId },
 });

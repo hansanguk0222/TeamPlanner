@@ -12,9 +12,9 @@ export const cardModel: Model = {
     ORDER BY card_order;`;
     return pool.execute(sql, [cardListId]);
   },
-  updateCardOrder({ cardId, cardOrder }: { cardId: number; cardOrder: number }) {
-    const sql = `UPDATE card SET card_order=? WHERE id=?;`;
-    return pool.execute(sql, [cardOrder, cardId]);
+  updateCardOrder({ cardId, cardOrder, cardListId }: { cardId: number; cardOrder: number; cardListId: number }) {
+    const sql = `UPDATE card SET card_order=?, cardList_id=? WHERE id=?;`;
+    return pool.execute(sql, [cardOrder, cardListId, cardId]);
   },
   updateCardContent({ cardId, content }: { cardId: number; content: string }) {
     const sql = 'UPDATE card SET content=? WHERE id=?;';

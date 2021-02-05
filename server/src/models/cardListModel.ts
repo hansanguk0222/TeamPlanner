@@ -23,4 +23,8 @@ export const cardListModel: Model = {
     const sql = `UPDATE cardList SET card_count = card_count + 1 WHERE id=?`;
     return pool.execute(sql, [id]);
   },
+  decreaseCardCount({ id }: { id: number }) {
+    const sql = 'UPDATE cardList SET card_count = card_count - 1 WHERE id=?';
+    return pool.execute(sql, [id]);
+  },
 };

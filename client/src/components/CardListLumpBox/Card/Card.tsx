@@ -48,24 +48,27 @@ const Card: React.FC<{
   availableMakeCardRef: boolean;
   handleSetUploadCardCompleteCnt: () => void;
   id: number;
+  cardListId: number;
   handleSetCardsY: ({ id, y }: { id: number; y: number | undefined }) => void;
   content: string;
 }> = ({
   availableMakeCardRef,
   handleSetUploadCardCompleteCnt,
   id,
+  cardListId,
   handleSetCardsY,
   content,
 }: {
   availableMakeCardRef: boolean;
   handleSetUploadCardCompleteCnt: () => void;
   id: number;
+  cardListId: number;
   handleSetCardsY: ({ id, y }: { id: number; y: number | undefined }) => void;
   content: string;
 }) => {
   const cardRef = useRef<HTMLDivElement>(null);
   const [{ isDragging }, drag] = useDrag({
-    item: { type: ItemTypes.CARD, id },
+    item: { type: ItemTypes.CARD, id, content, cardListId },
     collect: (monitor) => ({
       isDragging: !!monitor.isDragging(),
     }),

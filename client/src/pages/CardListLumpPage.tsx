@@ -82,11 +82,14 @@ const CardListLumpPage = () => {
         />
         <MainContentBox>
           <Header />
-          <CardListLumpBox
-            setSelectCardList={setSelectCardList}
-            setCreateCardListModalVisible={setCreateCardListModalVisible}
-            setCreateCardModalVisible={setCreateCardModalVisible}
-          />
+          {teamId && (
+            <CardListLumpBox
+              setSelectCardList={setSelectCardList}
+              setCreateCardListModalVisible={setCreateCardListModalVisible}
+              setCreateCardModalVisible={setCreateCardModalVisible}
+              teamId={+teamId}
+            />
+          )}
         </MainContentBox>
       </Container>
     </>

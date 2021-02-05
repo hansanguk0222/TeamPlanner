@@ -11,8 +11,11 @@ import {
   checkJoinedUserError,
   checkJoinedUserRequest,
   checkJoinedUserSuccess,
+  UPDATE_TEAM_MOVECNT,
+  updateTeamMoveCnt,
 } from '@/store/actions/team.action';
 import { TeamState } from '@/types';
+import { findDOMNode } from 'react-dom';
 
 type teamActionType =
   | ReturnType<typeof getTeamListRequest>
@@ -20,7 +23,8 @@ type teamActionType =
   | ReturnType<typeof getTeamListError>
   | ReturnType<typeof checkJoinedUserRequest>
   | ReturnType<typeof checkJoinedUserSuccess>
-  | ReturnType<typeof checkJoinedUserError>;
+  | ReturnType<typeof checkJoinedUserError>
+  | ReturnType<typeof updateTeamMoveCnt>;
 
 const initialState: TeamState = {
   getTeamList: {
@@ -95,6 +99,29 @@ const teamReducers = (state: TeamState = initialState, action: teamActionType) =
           status,
         },
       };
+    }
+    case UPDATE_TEAM_MOVECNT: {
+      console.log('여기에요');
+      const { teamId } = action.payload;
+      let updateTeam = state.teamList?.find((team) => team.id === teamId);
+      if (updateTeam) {
+        updateTeam = { ...updateTeam, moveCnt: updateTeam.moveCnt + 1 };
+        if (updateTeam.moveCnt === 15) {
+          console.log(updateTeam);
+          updateTeam.moveCnt = 0;
+        }
+        const teamList = state.teamList?.map((team) => {
+          if (team.id === updateTeam?.id) {
+            return updateTeam;
+          }
+          return team;
+        });
+        return {
+          ...state,
+          teamList,
+        };
+      }
+      return state;
     }
     default: {
       return state;

@@ -1,20 +1,24 @@
 import { Request, Response, NextFunction } from 'express';
 import { verifyRequestData } from '@/utils/utils';
 import { ERROR_MESSAGE } from '@/utils/contants';
-import { cardModel, teamModel } from '@/models';
+import { cardModel, cardListModel, teamModel } from '@/models';
 
 export const updateCardOrder = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   const { cardId } = req.params;
-  const { cardListId, cardOrder, teamId, moveCnt } = req.body;
-  if (verifyRequestData([cardListId, cardOrder, teamId, moveCnt])) {
+  const { beforeCardListId, nowCardListId, cardOrder, teamId, moveCnt } = req.body;
+  if (verifyRequestData([beforeCardListId, nowCardListId, cardOrder, teamId, moveCnt])) {
     try {
+      console.log(beforeCardListId, nowCardListId, cardOrder, teamId, moveCnt);
       await cardModel.updateCardOrder({
         cardId: +cardId,
         cardOrder: +cardOrder,
+        cardListId: +nowCardListId,
       });
+      await cardListModel.increaseCardCount({ id: +nowCardListId });
+      await cardListModel.decreaseCardCount({ id: +beforeCardListId });
       if (+moveCnt === 15) {
-        await teamModel.updateMoveCnt({ teamId, moveCnt: 0 });
-        const [cards] = await cardModel.getCards({ cardListId: +cardListId });
+        await teamModel.updateMoveCnt({ id: +teamId, moveCnt: 0 });
+        const [cards] = await cardModel.getCards({ cardListId: +nowCardListId });
         const resetOrder = cards.reduce(
           (
             acc: [[number, number]],
@@ -28,7 +32,7 @@ export const updateCardOrder = async (req: Request, res: Response, next: NextFun
         );
         await cardModel.resetCardOrder({ resetOrder });
       } else {
-        await teamModel.updateMoveCnt({ teamId, moveCnt });
+        await teamModel.updateMoveCnt({ id: +teamId, moveCnt });
       }
       res.status(200).end();
       return;
