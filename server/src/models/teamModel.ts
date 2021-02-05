@@ -24,7 +24,7 @@ export const teamModel: Model = {
     return pool.execute(sql, [id]);
   },
   getTeamList() {
-    const sql = `SELECT id, team_name AS teamName FROM team
+    const sql = `SELECT id, team_name AS teamName, move_cnt AS moveCnt FROM team
     WHERE is_deleted=0`;
     return pool.execute(sql, []);
   },

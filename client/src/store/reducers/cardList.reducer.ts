@@ -18,6 +18,12 @@ import {
   createCardListError,
   createCardListRequest,
   createCardListSuccess,
+  CHANGE_CARD_ORDER_ERROR,
+  CHANGE_CARD_ORDER_REQUEST,
+  CHANGE_CARD_ORDER_SUCCESS,
+  changeCardOrderError,
+  changeCardOrderRequest,
+  changeCardOrderSuccess,
 } from '@/store/actions/cardList.actions';
 import { CardListStatus } from '@/types';
 
@@ -30,7 +36,10 @@ type cardListActionType =
   | ReturnType<typeof createCardListError>
   | ReturnType<typeof createCardRequest>
   | ReturnType<typeof createCardSuccess>
-  | ReturnType<typeof createCardError>;
+  | ReturnType<typeof createCardError>
+  | ReturnType<typeof changeCardOrderRequest>
+  | ReturnType<typeof changeCardOrderSuccess>
+  | ReturnType<typeof changeCardOrderError>;
 
 const initialState: CardListStatus = {
   getCardListLump: {
@@ -42,6 +51,10 @@ const initialState: CardListStatus = {
     err: null,
   },
   createCardList: {
+    loading: false,
+    err: null,
+  },
+  changeCardOrder: {
     loading: false,
     err: null,
   },
@@ -142,9 +155,91 @@ const cardListReducers = (state: CardListStatus = initialState, action: cardList
       const { err } = action.payload;
       return {
         ...state,
-        loading: false,
-        err,
+        createCard: {
+          loading: false,
+          err,
+        },
       };
+    }
+    case CHANGE_CARD_ORDER_REQUEST: {
+      return {
+        ...state,
+        changeCardOrder: {
+          loading: true,
+          err: null,
+        },
+      };
+    }
+    case CHANGE_CARD_ORDER_SUCCESS: {
+      const { beforeCardListId, card, nowCardListId } = action.payload;
+      if (state.cardListLump) {
+        if (beforeCardListId === nowCardListId) {
+          const tempCardList = state.cardListLump.find((cardList) => cardList.id === nowCardListId);
+          if (tempCardList) {
+            const cards = tempCardList?.cards?.filter((beforeCard) => beforeCard.id !== card.id);
+            if (cards) {
+              const rightBeforeCardIdx = cards.findIndex((beforeCard) => beforeCard.cardOrder === card.cardOrder);
+              cards.splice(rightBeforeCardIdx, 0, card);
+              tempCardList.cards = [...cards];
+              const cardListLump = state.cardListLump.map((cardList) => {
+                if (cardList.id === tempCardList?.id) {
+                  return tempCardList;
+                }
+                return cardList;
+              });
+              return {
+                ...state,
+                changeCardOrder: {
+                  loading: false,
+                  err: null,
+                },
+                cardListLump,
+              };
+            }
+          }
+        } else {
+          const beforeCardList = state.cardListLump?.find((cardList) => cardList.id === beforeCardListId);
+          const nowCardList = state.cardListLump?.find((cardList) => cardList.id === nowCardListId);
+          console.log(beforeCardList, nowCardList);
+          if (beforeCardList && nowCardList) {
+            const newBeforeCardList = {
+              ...beforeCardList,
+              cardCount: beforeCardList.cardCount - 1,
+              cards: beforeCardList.cards?.filter((beforeCard) => beforeCard.id !== card.id),
+            };
+            const rightBeforeCardIdx = nowCardList.cards?.findIndex((nowCard) => nowCard.cardOrder > card.cardOrder);
+            console.log(newBeforeCardList, rightBeforeCardIdx);
+            if (rightBeforeCardIdx !== undefined && nowCardList.cards) {
+              nowCardList.cards.splice(rightBeforeCardIdx, 0, card);
+              const newNowCardList = {
+                ...nowCardList,
+                cardCount: nowCardList.cardCount + 1,
+                cards: nowCardList.cards,
+              };
+              console.log(newNowCardList);
+              if (state.cardListLump) {
+                const cardListLump = [...state.cardListLump];
+                const changeBeforeCardListIdx = cardListLump.findIndex((cardList) => cardList.id === newBeforeCardList.id);
+                const changeNowCardListIdx = cardListLump.findIndex((cardList) => cardList.id === nowCardList.id);
+                if (changeBeforeCardListIdx !== undefined && changeNowCardListIdx !== undefined) {
+                  cardListLump.splice(changeBeforeCardListIdx, 1, newBeforeCardList).splice(changeNowCardListIdx, 1, newNowCardList);
+                  console.log(cardListLump);
+                  return {
+                    ...state,
+                    changeCardOrder: {
+                      loading: false,
+                      err: null,
+                    },
+                    cardListLump,
+                  };
+                }
+              }
+            }
+          }
+        }
+      }
+
+      return state;
     }
     default: {
       return state;

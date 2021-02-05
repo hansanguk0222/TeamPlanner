@@ -12,6 +12,10 @@ import {
   CREATE_CARD_SUCCESS,
   createCardRequest,
   createCardListRequest,
+  CHANGE_CARD_ORDER_ERROR,
+  CHANGE_CARD_ORDER_REQUEST,
+  CHANGE_CARD_ORDER_SUCCESS,
+  changeCardOrderRequest,
 } from '@/store/actions/cardList.actions';
 import { cardListService, cardService } from '@/services';
 import { Card, CardList } from '@/types';
@@ -91,6 +95,28 @@ function* watchCreateCard() {
   yield takeEvery(CREATE_CARD_REQUEST, createCard);
 }
 
+function* changeCardOrder({ payload }: ReturnType<typeof changeCardOrderRequest>) {
+  try {
+    const { beforeCardListId, nowCardListId, cardOrder, moveCnt, teamId, cardId, content } = payload;
+    const { status } = yield call(cardService.changeCardOrder, { beforeCardListId, nowCardListId, cardOrder, moveCnt, teamId, cardId });
+    if (status === 200) {
+      const card: Card = {
+        cardListId: nowCardListId,
+        content,
+        id: cardId,
+        cardOrder,
+      };
+      yield put({ type: CHANGE_CARD_ORDER_SUCCESS, payload: { card, beforeCardListId, nowCardListId } });
+    }
+  } catch (err) {
+    yield put({ type: CHANGE_CARD_ORDER_ERROR, payload: { err } });
+  }
+}
+
+function* watchChangeCardOrder() {
+  yield takeEvery(CHANGE_CARD_ORDER_REQUEST, changeCardOrder);
+}
+
 export default function* cardListSaga(): Generator {
-  yield all([fork(watchGetCardListLump), fork(watchCreateCardList), fork(watchCreateCard)]);
+  yield all([fork(watchGetCardListLump), fork(watchCreateCardList), fork(watchCreateCard), fork(watchChangeCardOrder)]);
 }

@@ -1,4 +1,13 @@
 import { AxiosError } from 'axios';
+import 'react-dnd';
+
+declare module 'react-dnd' {
+  export interface DragObjectWithType {
+    id: number;
+    content: string;
+    cardListId: number;
+  }
+}
 
 export interface AuthState {
   login: {
@@ -87,6 +96,7 @@ export interface JoinErrorPayload {
 export interface Team {
   id: number;
   teamName: string;
+  moveCnt: number;
   joinUsers: User[];
 }
 
@@ -180,6 +190,10 @@ export interface CardListStatus {
     loading: boolean;
     err: AxiosError | null;
   };
+  changeCardOrder: {
+    loading: boolean;
+    err: AxiosError | null;
+  };
   cardListLump: CardList[] | null;
 }
 
@@ -220,6 +234,30 @@ export interface CreateCardSuccessPayload {
 
 export interface CreateCardErrorPayload {
   err: AxiosError;
+}
+
+export interface ChangeCardOrderRequestPayload {
+  cardId: number;
+  beforeCardListId: number;
+  nowCardListId: number;
+  moveCnt: number;
+  teamId: number;
+  cardOrder: number;
+  content: string;
+}
+
+export interface ChangeCardOrderSuccessPayload {
+  card: Card;
+  beforeCardListId: number;
+  nowCardListId: number;
+}
+
+export interface ChangeCardOrderErrorPayload {
+  err: AxiosError;
+}
+
+export interface UpdateTeamMoveCntPayload {
+  teamId: number;
 }
 
 export interface PopoverProps {

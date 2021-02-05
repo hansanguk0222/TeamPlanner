@@ -1,6 +1,6 @@
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '@/store/reducers';
-import { getCardListLumpRequest, createCardListRequest, createCardRequest } from '@/store/actions/cardList.actions';
+import { getCardListLumpRequest, createCardListRequest, createCardRequest, changeCardOrderRequest } from '@/store/actions/cardList.actions';
 import { useCallback } from 'react';
 
 const useCardList = () => {
@@ -22,6 +22,27 @@ const useCardList = () => {
     [dispatch],
   );
 
+  const onChangeCardOrderRequest = useCallback(
+    ({
+      teamId,
+      beforeCardListId,
+      nowCardListId,
+      cardOrder,
+      moveCnt,
+      cardId,
+      content,
+    }: {
+      teamId: number;
+      beforeCardListId: number;
+      nowCardListId: number;
+      cardOrder: number;
+      moveCnt: number;
+      cardId: number;
+      content: string;
+    }) => dispatch(changeCardOrderRequest({ teamId, beforeCardListId, nowCardListId, cardOrder, moveCnt, cardId, content })),
+    [dispatch],
+  );
+
   return {
     cardListLump,
     getCardListLumpError,
@@ -30,6 +51,7 @@ const useCardList = () => {
     onGetCardListLumpRequest,
     onCreateCardListRequest,
     onCreateCardRequest,
+    onChangeCardOrderRequest,
   };
 };
 

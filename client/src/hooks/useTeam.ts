@@ -1,6 +1,6 @@
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '@/store/reducers';
-import { getTeamListRequest, checkJoinedUserRequest } from '@/store/actions/team.action';
+import { getTeamListRequest, checkJoinedUserRequest, updateTeamMoveCnt } from '@/store/actions/team.action';
 import { useCallback } from 'react';
 
 const useTeam = () => {
@@ -15,6 +15,7 @@ const useTeam = () => {
     ({ userId, teamId }: { userId: number; teamId: number }) => dispatch(checkJoinedUserRequest({ userId, teamId })),
     [dispatch],
   );
+  const onUpdateTeamMoveCnt = useCallback(({ teamId }: { teamId: number }) => dispatch(updateTeamMoveCnt({ teamId })), [dispatch]);
 
   return {
     teamList,
@@ -23,6 +24,7 @@ const useTeam = () => {
     checkJoinedUserStatus,
     onGetTeamListRequest,
     onCheckJoinedUserRequest,
+    onUpdateTeamMoveCnt,
   };
 };
 

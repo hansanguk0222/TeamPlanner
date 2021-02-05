@@ -3,9 +3,10 @@ import styled, { css } from 'styled-components';
 import { CardList } from '@/types';
 import { XButton } from '@/public/svg';
 import { Button } from '@/styles/shared';
-import { useDrop } from 'react-dnd';
+import { DragObjectWithType, useDrop } from 'react-dnd';
+import useCardList from '@/hooks/useCardList';
+import useTeam from '@/hooks/useTeam';
 import Card from '../Card/Card';
-import { transitions } from 'polished';
 
 const ItemTypes = {
   CARD: 'card',
@@ -29,6 +30,7 @@ interface CardListProps {
   setCreateCardModalVisible: (state: boolean) => void;
   width: number;
   cardList: CardList;
+  teamId: number;
 }
 
 interface CardY {
@@ -134,16 +136,18 @@ const AddCardButton = styled(Button)<AddCardButtonProps>`
         `}
 `;
 
-const CardList: React.FC<CardListProps> = ({ setSelectCardList, width, cardList, setCreateCardModalVisible }: CardListProps) => {
+const CardList: React.FC<CardListProps> = ({ setSelectCardList, width, cardList, setCreateCardModalVisible, teamId }: CardListProps) => {
   const [cardsY, setCardsY] = useState<any>([]);
   const [targetCard, setTargetCard] = useState<any>({});
   const cardListHeaderRef = useRef<HTMLDivElement>(null);
   const [uploadCardCompleteCnt, setUploadCardCompleteCnt] = useState(0);
   const [availableMakeCardRef, setAvailabeMakeCardRef] = useState(false);
+  const { onChangeCardOrderRequest } = useCardList();
+  const { teamList, onGetTeamListRequest, onUpdateTeamMoveCnt } = useTeam();
 
   useEffect(() => {
-    console.log(targetCard);
-  }, [targetCard]);
+    onGetTeamListRequest({ firstLoad: false });
+  }, []);
 
   useEffect(() => {
     if (uploadCardCompleteCnt === cardList.cardCount) {
@@ -152,6 +156,58 @@ const CardList: React.FC<CardListProps> = ({ setSelectCardList, width, cardList,
       setAvailabeMakeCardRef(false);
     }
   }, [uploadCardCompleteCnt]);
+
+  const changePosition = ({ item, y }: { item: DragObjectWithType; y: number | undefined }) => {
+    const team = teamList?.find((team) => team.id === teamId);
+    if (y && team) {
+      const { moveCnt } = team;
+      const rightBehindCardY = cardsY.find((card: any) => card.y > y);
+
+      if (rightBehindCardY !== undefined) {
+        const inFrontCardYs = cardsY.filter((card: any) => card.y < y);
+        const rightBehindCard = cardList.cards?.find((card) => card.id === rightBehindCardY.id);
+
+        if (inFrontCardYs.length === 0) {
+          if (rightBehindCard) {
+            onChangeCardOrderRequest({
+              cardId: item.id,
+              teamId,
+              beforeCardListId: item.cardListId,
+              nowCardListId: cardList.id,
+              moveCnt: moveCnt + 1,
+              cardOrder: rightBehindCard.cardOrder - 1,
+              content: item.content,
+            });
+          }
+        } else {
+          const rightInFrontCardY = inFrontCardYs[inFrontCardYs.length - 1];
+          const rightInFrontCard = cardList.cards?.find((card) => card.id === rightInFrontCardY.id);
+          if (rightBehindCard && rightInFrontCard) {
+            onChangeCardOrderRequest({
+              cardId: item.id,
+              teamId,
+              beforeCardListId: item.cardListId,
+              nowCardListId: cardList.id,
+              moveCnt: moveCnt + 1,
+              cardOrder: (rightInFrontCard.cardOrder + rightBehindCard.cardOrder) / 2,
+              content: item.content,
+            });
+          }
+        }
+      } else {
+        onChangeCardOrderRequest({
+          cardId: item.id,
+          teamId,
+          beforeCardListId: item.cardListId,
+          nowCardListId: cardList.id,
+          moveCnt: moveCnt + 1,
+          cardOrder: cardList.cardCount,
+          content: item.content,
+        });
+      }
+      onUpdateTeamMoveCnt({ teamId });
+    }
+  };
 
   const handleSetCardsdY = ({ id, y }: { id: number; y: number | undefined }) => {
     if (y) {
@@ -162,6 +218,7 @@ const CardList: React.FC<CardListProps> = ({ setSelectCardList, width, cardList,
   const makeMarginBottom = ({ y }: { y: number | undefined }) => {
     if (y) {
       const targetCard = cardsY.find((cardY: CardY) => cardY.y > y);
+      console.log(targetCard);
       setTargetCard(targetCard);
     }
   };
@@ -169,7 +226,7 @@ const CardList: React.FC<CardListProps> = ({ setSelectCardList, width, cardList,
   const [{ isOver }, drop] = useDrop({
     accept: ItemTypes.CARD,
     hover: (item, monitor) => makeMarginBottom({ y: monitor.getSourceClientOffset()?.y }),
-    drop: (item) => console.log(cardsY),
+    drop: (item, monitor) => changePosition({ item, y: monitor.getSourceClientOffset()?.y }),
     collect: (monitor) => ({
       isOver: !!monitor.isOver(),
     }),
@@ -202,6 +259,7 @@ const CardList: React.FC<CardListProps> = ({ setSelectCardList, width, cardList,
               availableMakeCardRef={availableMakeCardRef}
               handleSetUploadCardCompleteCnt={handleSetUploadCardCompleteCnt}
               id={card.id}
+              cardListId={cardList.id}
               handleSetCardsY={handleSetCardsdY}
               content={card.content}
             />
